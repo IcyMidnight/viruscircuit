@@ -13,5 +13,5 @@ function Update () {
     vMove *= Time.deltaTime;
     hMove *= Time.deltaTime;
     
-    transform.rigidbody.AddForce(hMove, 0, vMove);
+    transform.rigidbody.AddForce(hMove*3, 0, vMove*3);
 }
