@@ -24,7 +24,7 @@ function Start () {
 function Update () {
 
 	for(x in RedBloodPool){
-		CheckPosition(x, -10);
+		CheckPosition(x, Camera.main.transform.position.x-10);
 	}
 
 }
@@ -56,7 +56,7 @@ function StartBG(){
 	}
 }
 		
-
+//Begin the flow of cells
 function StartRedBloodCells(){
 	var x : int = 0;
 	while(loopOfCells == false){
@@ -69,6 +69,7 @@ function StartRedBloodCells(){
 	}
 }	
 
+//Checks the location of the cells and restarts them 
 function CheckPosition(cell: GameObject, xDist : float){
 	if(cell.transform.position.x < xDist){
 		CreateRedBloodCell(cell);
