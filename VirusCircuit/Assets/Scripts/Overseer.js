@@ -9,7 +9,7 @@ private var BloodCellCounter : int = 0;
 
 private var RedBloodPool : GameObject[] = new GameObject[10];
 
-private var BgArray : GameObject = new GameObject[10];
+private var BgArray : GameObject[] = new GameObject[10];
 private var loopOfCells : boolean = false;
 
 var levelLayout : int[] = new int[10];
@@ -17,20 +17,21 @@ var levelLayout : int[] = new int[10];
 function Start () {
 	CreateRedBloodPool();
 	CreateBgPool();
+	StartBG();
 	StartRedBloodCells();
 }
 
 function Update () {
 
 	for(x in RedBloodPool){
-		CheckPosition(x, -10);
+		CheckPosition(x, Camera.main.transform.position.x-10);
 	}
 
 }
 
 //Make a pool of all tiles that will be used as backgrounds
 function CreateBgPool(){
-	for(var x = 0; x<BgArray.length-1; x++){
+	for(var x = 0; x<BgArray.length; x++){
 		BgArray[x] = Instantiate(BgTiles[Random.Range(0, BgTiles.length-1)], Vector3(0,0,30), Quaternion.identity);
 	}
 }
@@ -46,11 +47,16 @@ function CreateRedBloodPool(){
 }
 
 //Set the background
-function StartBG(HowLong : int){
-	For(var x : int = 0; x < HowLong; x++){
-		
-		
+function StartBG(){
 
+	for(var x = 0; x < BgArray.length; x++){
+	
+		BgArray[x].transform.position = Vector3(x*15,0,0);
+		
+	}
+}
+		
+//Begin the flow of cells
 function StartRedBloodCells(){
 	var x : int = 0;
 	while(loopOfCells == false){
@@ -63,6 +69,7 @@ function StartRedBloodCells(){
 	}
 }	
 
+//Checks the location of the cells and restarts them 
 function CheckPosition(cell: GameObject, xDist : float){
 	if(cell.transform.position.x < xDist){
 		CreateRedBloodCell(cell);
