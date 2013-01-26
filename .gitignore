@@ -7,5 +7,7 @@
 *.unityproj
 *.sln
 *.userprefs
+
 Assembly-UnityScript.pidb
 *.pidb
+*.suo
