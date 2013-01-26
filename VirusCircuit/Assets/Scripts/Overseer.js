@@ -37,12 +37,12 @@ function Update () {
 
 }
 
+//This keeps the player from moving off the screen in either the right or left directions
 function KeepPlayerInView(){
-	var farLeft : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(100,100,0)).x;
+	var farLeft : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(50,100,0)).x;
 	
-	var farRight : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width-100,100,0)).x;
+	var farRight : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width-50,100,0)).x;
 	
-	Debug.Log(farRight);
 
 	if(Player.transform.position.x < farLeft){
 		Player.transform.position.x = farLeft;
@@ -52,9 +52,30 @@ function KeepPlayerInView(){
 	}
 }
 
+//Move the camera at a set speed
 function MoveCamera(){
-	Mover.transform.position = Vector3(Time.time*2, 0,0);
+//	Mover.transform.position.x = Time.time*2;
+//	Mover.transform.position.x += Mathf.Abs(Mathf.Sin(Time.time))/10;
+	Mover.transform.position.x += fun1(Time.time)*.05;
 }
+
+function fun1(t : float) {
+    t = t/5;
+    t = t - Mathf.Floor(t);
+    if (t < 0.25) {
+        var x = t * 4 * Mathf.PI;
+        return (0.75 * Mathf.Cos(x+Mathf.PI)) + 0.25;
+    } else if (t > 0.9) {
+        x = (t - 0.9) * 10 * Mathf.PI;
+        return (0.75 * Mathf.Cos(x)) + 0.25;
+    } else {
+        return 1;
+    }
+}
+
+
+
+
 
 //Make a pool of all tiles that will be used as backgrounds
 function CreateBgPool(){
