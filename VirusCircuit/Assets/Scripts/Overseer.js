@@ -7,19 +7,24 @@ var BgTiles : GameObject[] = new GameObject[3];
 
 private var BloodCellCounter : int = 0;
 
-private var RedBloodPool : Array = new Array();
+private var RedBloodPool : GameObject[] = new GameObject[10];
 
 private var BgArray : Array = new Array();
+private var loopOfCells : boolean = false;
+
+var levelLayout : int[] = new int[10];
 
 function Start () {
 	CreateRedBloodPool();
+	CreateBgPool();
+	StartRedBloodCells();
 }
 
 function Update () {
 
-if(Input.GetButtonDown("Fire1")){
-CreateRedBloodCell();
-}
+	for(x in RedBloodPool){
+		CheckPosition(x, -10);
+	}
 
 }
 
@@ -31,13 +36,9 @@ function CreateBgPool(){
 	}
 }
 
-
-
-
-
 //Make a pool of blood cells to use as needed
 function CreateRedBloodPool(){
-	for(var x = 0; x < 50; x++){
+	for(var x = 0; x < RedBloodPool.length; x++){
 	
 		RedBloodPool[x] = Instantiate(redBloodCell, Vector3(0,0,20+x*1.5), Quaternion.identity);
 		
@@ -45,15 +46,38 @@ function CreateRedBloodPool(){
 	}
 }
 
-function CreateRedBloodCell(){
+//Set the background
+//function StartBG(BackgroundMatrix : int[]){
+//	For(var x : int = 0; x < BackgroundMatrix.length; x++){
+		
 
-	var RedBloodCell : GameObject = RedBloodPool[BloodCellCounter];
-	RedBloodCell.transform.position = Vector3(0, 0, Random.Range(-5.0, 5.0));
-	RedBloodCell.rigidbody.velocity = Vector3(0,0,0);
-	RedBloodCell.transform.rotation.eulerAngles = Vector3(0,0,0);
-	RedBloodCell.rigidbody.AddForce(Vector3(-1,0,0), 3);
+function StartRedBloodCells(){
+	var x : int = 0;
+	while(loopOfCells == false){
+		CreateRedBloodCell(RedBloodPool[x]);
+		x++;
+		yield WaitForSeconds(1.0);
+		if(x==RedBloodPool.length-1){
+			break;
+		}
+	}
+}	
+
+function CheckPosition(cell: GameObject, xDist : float){
+	if(cell.transform.position.x < xDist){
+		CreateRedBloodCell(cell);
+	}
+}
+
+
+function CreateRedBloodCell(cell : GameObject){
+
+	cell.transform.position = Vector3(10, 0, Random.Range(-4.5, 4.5));
+	cell.rigidbody.velocity = Vector3(0,0,0);
+	cell.transform.rotation.eulerAngles = Vector3(0,0,0);
+	cell.rigidbody.AddForce(Vector3(-3,0,0), 1);
 	
-	if(BloodCellCounter<RedBloodPool.length){
+	if(BloodCellCounter < RedBloodPool.length-1){
 		BloodCellCounter++;
 	}
 	else{
