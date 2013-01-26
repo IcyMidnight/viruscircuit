@@ -129,7 +129,6 @@ function CreateRedBloodCell(cell : GameObject){
 	cell.transform.position = Vector3(Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,100,0)).x+5, 0, Random.Range(-4.5, 4.5));
 	cell.rigidbody.velocity = Vector3(0,0,0);
 	cell.transform.rotation.eulerAngles = Vector3(0,0,0);
-	cell.rigidbody.AddForce(Vector3(-3,0,0), 1);
 	
 	if(BloodCellCounter < RedBloodPool.length-1){
 		BloodCellCounter++;
