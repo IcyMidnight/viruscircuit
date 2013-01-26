@@ -1,9 +1,9 @@
 #pragma strict
-var collisionRBC = audio;
-var collisionWBC = audio;
-var collisionNPC = audio;
-var collisionBVW = audio;
-var TargetCell = audio;
+var collisionRBC : AudioClip;
+var collisionWBC : AudioClip;
+var collisionNPC : AudioClip;
+var collisionBVW : AudioClip;
+var TargetCell : AudioClip;
 
 
 function OnCollisionEnter (other : Collider) {
@@ -11,7 +11,7 @@ function OnCollisionEnter (other : Collider) {
 		//Play audio for Red Blood Cell Collision
 		if(other.gameObject.tag == "RBC"){
 		
-		audio.PlayOneShot(CollisionRBC);
+		audio.PlayOneShot(collisionRBC);
 		
 		}
 		
@@ -19,7 +19,7 @@ function OnCollisionEnter (other : Collider) {
 		//Play audio for White Blood Cell Collision
 		if(other.gameObject.tag == "WBC"){
 		
-		audio.PlayOneShot(CollisionWBC);
+		audio.PlayOneShot(collisionWBC);
 		
 		}
 		
@@ -27,7 +27,7 @@ function OnCollisionEnter (other : Collider) {
 		//Play audio for NPC Collision
 		if(other.gameObject.tag == "NPC"){
 		
-		audio.PlayOneShot(CollisionNPC);
+		audio.PlayOneShot(collisionNPC);
 		
 		}
 
@@ -35,7 +35,7 @@ function OnCollisionEnter (other : Collider) {
 		//Play audio for Blood Vessel Wall Collision
 		if(other.gameObject.tag == "BVW"){
 		
-		audio.PlayOneShot(CollisionBVW);
+		audio.PlayOneShot(collisionBVW);
 		
 		}
 
