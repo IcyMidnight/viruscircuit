@@ -2,6 +2,10 @@
 
 var currentBloodSpeed : float = 1.0;
 
+var Mover : GameObject;
+
+var Player : GameObject;
+
 var redBloodCell : GameObject;
 var BgTiles : GameObject[] = new GameObject[3];
 
@@ -23,10 +27,33 @@ function Start () {
 
 function Update () {
 
+
+	MoveCamera();
+	KeepPlayerInView();
+
 	for(x in RedBloodPool){
-		CheckPosition(x, Camera.main.transform.position.x-10);
+		CheckPosition(x, Mover.transform.position.x-10);
 	}
 
+}
+
+function KeepPlayerInView(){
+	var farLeft : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(100,100,0)).x;
+	
+	var farRight : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width-100,100,0)).x;
+	
+	Debug.Log(farRight);
+
+	if(Player.transform.position.x < farLeft){
+		Player.transform.position.x = farLeft;
+	}
+	if(Player.transform.position.x > farRight){
+		Player.transform.position.x = farRight;
+	}
+}
+
+function MoveCamera(){
+	Mover.transform.position = Vector3(Time.time*2, 0,0);
 }
 
 //Make a pool of all tiles that will be used as backgrounds
@@ -79,7 +106,7 @@ function CheckPosition(cell: GameObject, xDist : float){
 
 function CreateRedBloodCell(cell : GameObject){
 
-	cell.transform.position = Vector3(10, 0, Random.Range(-4.5, 4.5));
+	cell.transform.position = Vector3(Mover.transform.position.x+10, 0, Random.Range(-4.5, 4.5));
 	cell.rigidbody.velocity = Vector3(0,0,0);
 	cell.transform.rotation.eulerAngles = Vector3(0,0,0);
 	cell.rigidbody.AddForce(Vector3(-3,0,0), 1);
