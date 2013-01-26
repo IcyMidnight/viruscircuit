@@ -50,7 +50,7 @@ function CreateRedBloodCell(){
 	var RedBloodCell : GameObject = RedBloodPool[BloodCellCounter];
 	RedBloodCell.transform.position = Vector3(0, 0, Random.Range(-5.0, 5.0));
 	RedBloodCell.rigidbody.velocity = Vector3(0,0,0);
-	RedBloodCell.transform.rotation = Vector3(0,0,0);
+	RedBloodCell.transform.rotation.eulerAngles = Vector3(0,0,0);
 	RedBloodCell.rigidbody.AddForce(Vector3(-1,0,0), 3);
 	
 	if(BloodCellCounter<RedBloodPool.length){
