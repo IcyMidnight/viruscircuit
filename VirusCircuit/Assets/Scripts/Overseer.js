@@ -22,17 +22,18 @@ function Start () {
 	CreateRedBloodPool();
 	CreateBgPool();
 	StartBG();
-	StartRedBloodCells();
+//	StartRedBloodCells();
 }
 
 function Update () {
 
+	PushWithFlow(Player);
 
 	MoveCamera();
 	KeepPlayerInView();
 
 	for(x in RedBloodPool){
-		CheckPosition(x, Mover.transform.position.x-10);
+//		CheckPosition(x, Mover.transform.position.x-10);
 	}
 
 }
@@ -54,13 +55,22 @@ function KeepPlayerInView(){
 
 //Move the camera at a set speed
 function MoveCamera(){
-//	Mover.transform.position.x = Time.time*2;
+	Mover.transform.position.x = Time.time*2;
 //	Mover.transform.position.x += Mathf.Abs(Mathf.Sin(Time.time))/10;
-	Mover.transform.position.x += fun1(Time.time)*.05;
+//	Mover.transform.position.x += HeartBeat(Time.time, 5)*.05;
 }
 
-function fun1(t : float) {
-    t = t/5;
+function PushWithFlow(object : GameObject){
+	object.rigidbody.AddForce(Vector3(HeartBeat(Time.time, 5)*2.25,0,0));
+	}
+
+function OnGUI(){
+	GUI.Box(Rect(0,0,200,200),"");
+	}
+
+
+function HeartBeat(t : float, factor : float) {
+    t = t/factor;
     t = t - Mathf.Floor(t);
     if (t < 0.25) {
         var x = t * 4 * Mathf.PI;
