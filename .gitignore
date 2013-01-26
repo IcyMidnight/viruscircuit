@@ -8,4 +8,4 @@
 *.sln
 *.userprefs
 Assembly-UnityScript.pidb
-VirusCircuit/Assembly-UnityScript.pidb
+*.pidb
