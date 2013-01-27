@@ -7,6 +7,27 @@ var TargetCellAttack : AudioClip;
 
 var WBCCollisionCounter : int = 0;
 
+var radius = 3.0;
+var power = 10.0;
+var ExplosionLocation : GameObject;
+
+function Update(){
+	
+	if(Input.GetButtonDown("Fire1")){
+	
+	Debug.Log("Boom!");
+	
+    var colliders : Collider[] = Physics.OverlapSphere (ExplosionLocation.transform.position, radius);
+    
+    for (var hit : Collider in colliders) {
+        if (!hit)
+            continue;
+        
+        if (hit.rigidbody)
+            hit.rigidbody.AddExplosionForce(power, ExplosionLocation.transform.position,10, 3.0);
+    }
+    }
+   }
 
 
 function OnCollisionEnter (other : Collision) {
