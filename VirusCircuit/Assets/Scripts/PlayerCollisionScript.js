@@ -9,10 +9,12 @@ var TargetCell : AudioClip;
 function OnCollisionEnter (other : Collider) {
 		
 		
-		//Play audio for White Blood Cell Collision
+		//Interact with White Blood Cell Collision
 		if(other.gameObject.tag == "WBC"){
 		
 		audio.PlayOneShot(collisionWBC);
+		Destroy(gameObject);
+		Destroy(other.gameObject);
 		
 		}
 		
