@@ -88,7 +88,7 @@ function Update () {
 	Debug.Log("Segment: " + segment);
 }
 
-function WhiteCellUpdate(cell : GameObject, mainCamera : GameObject) {
+function WhiteCellUpdate(cell : GameObject, mainCamera : Camera) {
 	if (CheckPositionAndKill(cell, mainCamera.camera.ScreenToWorldPoint(Vector3(0,0,13)).x-2)) {
 		PushWithFlow(cell);
 		var playerPosition : Vector3 = Player.rigidbody.position;
