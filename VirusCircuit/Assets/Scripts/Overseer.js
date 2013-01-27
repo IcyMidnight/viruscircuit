@@ -1,4 +1,5 @@
 #pragma strict
+import System.Collections.Generic;
 
 var currentBloodSpeed : float = 1.0;
 
@@ -18,8 +19,11 @@ private var BloodCellCounter : int = 0;
 
 
 private var RedBloodPool : GameObject[] = new GameObject[30];
-private var WhiteBloodPool = new Array();
 
+private var WhiteBloodPoolSize : int = 30;  // Number of cells in the active and reserve pools.
+private var ReserveWhiteBloodPool : List.<GameObject> = new List.<GameObject>();
+private var ActiveWhiteBloodPool : List.<GameObject> = new List.<GameObject>();
+private var WhiteBooldCellsToDeactivate : List.<GameObject> = new List.<GameObject>();
 
 private var BackgroundRedBloodPool : GameObject[] = new GameObject[30];
 
@@ -33,6 +37,7 @@ var lastWhiteCell = 0;
 
 function Start () {
 	CreateRedBloodPool();
+	CreateWhiteBloodPool();
 	CreateBgPool();
 	StartBG();
 	StartRedBloodCells();
@@ -56,10 +61,17 @@ function Update () {
 		CheckBackgroundPosition(x, Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,0,15)).x-2);
 	}
 	
-	for(cell in WhiteBloodPool){
+	for(cell in ActiveWhiteBloodPool){
 		PushWithFlow(cell);
-		CheckPositionAndKill(cell, Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,0,0)).x-2);
+		CheckPositionAndKill(cell, Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,0,13)).x-2);
 	}
+	
+	for (var cell : GameObject in WhiteBooldCellsToDeactivate) {
+		ActiveWhiteBloodPool.Remove(cell);
+		ReserveWhiteBloodPool.Add(cell);
+		Debug.Log("after removing cells, num are " + ActiveWhiteBloodPool.Count + ", " + ReserveWhiteBloodPool.Count);
+	}
+	WhiteBooldCellsToDeactivate.Clear();
 
 	var floorTime : int = Mathf.Floor(Time.fixedTime);
 	if (floorTime > lastWhiteCell) {
@@ -74,7 +86,6 @@ function KeepPlayerInView(){
 	
 	var farRight : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width-50,0,13)).x;
 	
-
 	if(Player.transform.position.x < farLeft){
 		Player.transform.position.x = farLeft;
 	}
@@ -123,8 +134,9 @@ function CreateRedBloodPool(){
 
 //Make a pool of blood cells to use as needed
 function CreateWhiteBloodPool(){
-	for(var x = 0; x < RedBloodPool.length; x++){
-		WhiteBloodPool[x] = Instantiate(whiteBloodCell, Vector3(0,0,20+x*1.5), Quaternion.identity);
+	for(var i = 0; i < WhiteBloodPoolSize; i++){
+		Debug.Log("Adding cell " + i);
+		ReserveWhiteBloodPool.Add(Instantiate(whiteBloodCell, Vector3(0,0,20+i*1.5), Quaternion.identity));
 	}
 }
 
@@ -160,13 +172,11 @@ function CheckPosition(cell: GameObject, xDist : float){
 
 function CheckPositionAndKill(cell: GameObject, xDist : float){
 	if(cell.transform.position.x < xDist){
-		WhiteBloodPool.Remove(cell);
-		Destroy(cell);
+		WhiteBooldCellsToDeactivate.Add(cell);
 	}
 }
 
 function CreateRedBloodCell(cell : GameObject){
-
 	cell.transform.position = Vector3(Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,0,13)).x+5, 0, Random.Range(-4.5, 4.5));
 	cell.rigidbody.velocity = Vector3(0,0,0);
 	cell.transform.rotation.eulerAngles = Vector3(0,0,0);
@@ -179,14 +189,21 @@ function CreateRedBloodCell(cell : GameObject){
 	}
 }
 
-
 function CreateWhiteBloodCell(){
-	var position : Vector3 = Vector3(Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,100,0)).x+5, 0, Random.Range(-4.5, 4.5));
-	WhiteBloodPool.Push(Instantiate(whiteBloodCell, position, Quaternion.identity));
+	Debug.Log("Creating a White Blood Cell...");
+	
+	var position : Vector3 = Vector3(Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,0,13)).x+5, 0, Random.Range(-4.5, 4.5));
+	
+	var lastIndex : int = ReserveWhiteBloodPool.Count - 1;
+	var cell : GameObject = ReserveWhiteBloodPool[lastIndex];
+	ReserveWhiteBloodPool.RemoveAt(lastIndex);
+	ActiveWhiteBloodPool.Add(cell);
 
-	//whiteBloodCell.transform.position = ;
-	whiteBloodCell.rigidbody.velocity = Vector3(0,0,0);
-	whiteBloodCell.transform.rotation.eulerAngles = Vector3(0,0,0);
+	cell.transform.position = position;
+	cell.rigidbody.velocity = Vector3(0,0,0);
+	cell.transform.rotation.eulerAngles = Vector3(0,0,0);
+	
+		Debug.Log("after add cell, num are " + ActiveWhiteBloodPool.Count + ", " + ReserveWhiteBloodPool.Count);
 }
 
 //Checks the location of the cells and restarts them 
@@ -195,12 +212,14 @@ function CheckBackgroundPosition(cell: GameObject, xDist : float){
 		CreateBackgroundCell(cell);
 	}
 }
+
 function CreateBackgroundCell(cell : GameObject){
 
 	cell.transform.position = Vector3(Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,0,14)).x+5, Random.Range(-1,-3), Random.Range(-3, 3));
 	cell.rigidbody.velocity = Vector3(0,0,0);
 	cell.transform.rotation.eulerAngles = Vector3(0,0,0);
-}		
+}
+
 //Begin the flow of cells
 function StartBackgroundCells(){
 	var x : int = 0;
