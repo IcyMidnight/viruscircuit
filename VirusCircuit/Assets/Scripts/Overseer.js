@@ -15,6 +15,8 @@ var BgTiles : GameObject[] = new GameObject[3];
 
 private var BloodCellCounter : int = 0;
 
+private var cameraUtils : CameraUtils = new CameraUtils();
+
 
 private var RedBloodPool : GameObject[] = new GameObject[30];
 
@@ -54,19 +56,21 @@ function Update () {
 
 	MoveCamera();
 	KeepPlayerInView();
+	
+	var mainCamera : GameObject = Mover.Find("Main Camera");
 
 	for(x in RedBloodPool){
 		PushWithFlow(x);
-		CheckPosition(x, Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,0,13)).x-2);
+		CheckPosition(x, mainCamera.camera.ScreenToWorldPoint(Vector3(0,0,13)).x-2);
 	}
 	for(x in BackgroundRedBloodPool){
 		PushWithFlow(x);
-		CheckBackgroundPosition(x, Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,0,15)).x-2);
+		CheckBackgroundPosition(x, mainCamera.camera.ScreenToWorldPoint(Vector3(0,0,15)).x-2);
 	}
 	
 	for(cell in ActiveWhiteBloodPool){
 		PushWithFlow(cell);
-		CheckPositionAndKill(cell, Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,0,13)).x-2);
+		CheckPositionAndKill(cell, mainCamera.camera.ScreenToWorldPoint(Vector3(0,0,13)).x-2);
 	}
 	
 	for (var cell : GameObject in WhiteBooldCellsToDeactivate) {
@@ -81,8 +85,8 @@ function Update () {
 		CreateWhiteBloodCell();
 	}
 	
-	var segment = CameraUtils.GetCurrentLevelSegment(Mover.Find("Main Camera").camera);
-	//Debug.Log("Segment: " + segment);
+	var segment = cameraUtils.GetCurrentLevelSegment(mainCamera);
+	Debug.Log("Segment: " + segment);
 }
 
 //This keeps the player from moving off the screen in either the right or left directions
