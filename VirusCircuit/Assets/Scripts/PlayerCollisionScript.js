@@ -7,30 +7,31 @@ var TargetCell : AudioClip;
 
 
 
-function OnCollisionEnter (collision : Collision) {
+function OnCollisionEnter (other : Collision) {
 	
 		
-		for (var contact : ContactPoint in collision.contacts){
+//		for (var contact : ContactPoint in collision.contacts){
 		
 		
 		
 			//Interact with White Blood Cell Collision
-			if(collision.gameObject.tag == "WBC"){
+			if(other.gameObject.tag == "WBC"){
 			Debug.Log("WBC");
 			audio.PlayOneShot(collisionWBC);
+
 			
-			}else if(collision.gameObject.tag == "NPC"){
+			}else if(other.gameObject.tag == "NPC"){
 			Debug.Log("NPC");
 			audio.PlayOneShot(collisionNPC);
 			
-			} else if(collision.gameObject.tag == "BVW"){
+			} else if(other.gameObject.tag == "BVW"){
 			
 			audio.PlayOneShot(collisionBVW);
 			
-			}else if(collision.gameObject.tag == "TargetCell"){
+			}else if(other.gameObject.tag == "TargetCell"){
 			
 			audio.PlayOneShot(TargetCell);
-			
-			}
-		}
+ 		
+		} 
+//		}
 }
