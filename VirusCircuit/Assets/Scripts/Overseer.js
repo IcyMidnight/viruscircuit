@@ -100,6 +100,7 @@ function Update () {
 	}
 	
 	for(var cell : GameObject in ActiveWhiteBloodPool){
+		PushFromVectorBelow(cell);
 		WhiteCellUpdate(cell, mainCamera);
 	}
 	
@@ -118,7 +119,7 @@ function Update () {
 
 function WhiteCellUpdate(cell : GameObject, mainCamera : Camera) {
 	if (CheckPositionAndKill(cell, mainCamera.camera.ScreenToWorldPoint(Vector3(0,0,13)).x-2)) {
-		PushWithFlow(cell);
+//		PushWithFlow(cell);
 		var playerPosition : Vector3 = Player.rigidbody.position;
 	}
 }
@@ -326,7 +327,8 @@ function CheckBackgroundPosition(cell: GameObject, xDist : float){
 
 function CreateBackgroundCell(cell : GameObject){
 
-	cell.transform.position = Vector3(Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,0,14)).x+5, Random.Range(-1,-3), Random.Range(-3, 3));
+	cell.transform.position = RandomCircle(Generator.transform.position, 4.5);
+//	cell.transform.position = Vector3(Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,0,14)).x+5, Random.Range(-1,-3), Random.Range(-3, 3));
 	cell.rigidbody.velocity = Vector3(0,0,0);
 	cell.transform.rotation.eulerAngles = Vector3(0,0,0);
 }
