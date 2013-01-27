@@ -11,6 +11,7 @@ var WBCCollisionCounter : int = 0;
 
 function OnCollisionEnter (other : Collision) {
 			
+			
 		
 			//Interact with White Blood Cell Collision
 			if(other.gameObject.tag == "WBC"){
