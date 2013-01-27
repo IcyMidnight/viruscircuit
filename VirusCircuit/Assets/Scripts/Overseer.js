@@ -68,9 +68,8 @@ function Update () {
 		CheckBackgroundPosition(x, mainCamera.camera.ScreenToWorldPoint(Vector3(0,0,15)).x-2);
 	}
 	
-	for(cell in ActiveWhiteBloodPool){
-		PushWithFlow(cell);
-		CheckPositionAndKill(cell, mainCamera.camera.ScreenToWorldPoint(Vector3(0,0,13)).x-2);
+	for(var cell : GameObject in ActiveWhiteBloodPool){
+		WhiteCellUpdate(cell, mainCamera);
 	}
 	
 	for (var cell : GameObject in WhiteBooldCellsToDeactivate) {
@@ -87,6 +86,13 @@ function Update () {
 	
 	var segment = cameraUtils.GetCurrentLevelSegment(mainCamera);
 	Debug.Log("Segment: " + segment);
+}
+
+function WhiteCellUpdate(cell : GameObject, mainCamera : GameObject) {
+	if (CheckPositionAndKill(cell, mainCamera.camera.ScreenToWorldPoint(Vector3(0,0,13)).x-2)) {
+		PushWithFlow(cell);
+		var playerPosition : Vector3 = Player.rigidbody.position;
+	}
 }
 
 //This keeps the player from moving off the screen in either the right or left directions
@@ -181,7 +187,9 @@ function CheckPosition(cell: GameObject, xDist : float){
 function CheckPositionAndKill(cell: GameObject, xDist : float){
 	if(cell.transform.position.x < xDist){
 		WhiteBooldCellsToDeactivate.Add(cell);
+		return false;
 	}
+	return true;
 }
 
 function CreateRedBloodCell(cell : GameObject){
