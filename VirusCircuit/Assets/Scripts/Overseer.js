@@ -142,26 +142,29 @@ function WhiteCellUpdate(cell : GameObject, mainCamera : Camera) {
 
 //This keeps the player from moving off the screen in either the right or left directions
 function KeepPlayerInView(){
-	var farLeft : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(50,0,13)).x;
+	if(gamePhase != 2){
 	
-	var farRight : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width-50,0,13)).x;
-	
-	var farTop : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,50,13)).z;
-	
-	var farBottom : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,Screen.height-50,13)).z;
-	
-	
-	if(Player.transform.position.x < farLeft){
-		Player.transform.position.x = farLeft;
-	}
-	if(Player.transform.position.x > farRight){
-		Player.transform.position.x = farRight;
-	}	
-	if(Player.transform.position.z > farBottom){
-		Player.transform.position.z = farBottom;
-	}
-	if(Player.transform.position.z < farTop){
-		Player.transform.position.z = farTop;
+		var farLeft : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(50,0,13)).x;
+		
+		var farRight : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width-50,0,13)).x;
+		
+		var farTop : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,50,13)).z;
+		
+		var farBottom : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,Screen.height-50,13)).z;
+		
+		
+		if(Player.transform.position.x < farLeft){
+			Player.transform.position.x = farLeft;
+		}
+		if(Player.transform.position.x > farRight){
+			Player.transform.position.x = farRight;
+		}	
+		if(Player.transform.position.z > farBottom){
+			Player.transform.position.z = farBottom;
+		}
+		if(Player.transform.position.z < farTop){
+			Player.transform.position.z = farTop;
+		}
 	}
 }
 
