@@ -57,7 +57,7 @@ function Update () {
 	MoveCamera();
 	KeepPlayerInView();
 	
-	var mainCamera : GameObject = Mover.Find("Main Camera");
+	var mainCamera : Camera = Mover.Find("Main Camera").camera;
 
 	for(x in RedBloodPool){
 		PushWithFlow(x);
@@ -85,7 +85,7 @@ function Update () {
 		CreateWhiteBloodCell();
 	}
 	
-	var segment = cameraUtils.GetCurrentLevelSegment(mainCamera);
+	var segment = this.GetComponent(CameraUtils).GetCurrentLevelSegment(mainCamera);
 	Debug.Log("Segment: " + segment);
 }
 
