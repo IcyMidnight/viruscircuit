@@ -6,27 +6,24 @@ var collisionBVW : AudioClip;
 var TargetCell : AudioClip;
 
 
-function OnTriggerEnter (other : Collider) {
+function OnCollisionEnter (collision : Collision) {
 	
 //		Debug.Log ("Collision");
 		
 		//Interact with White Blood Cell Collision
-		if(other.gameObject.tag == "WBC"){
-//		Debug.Log ("WBC");
+		if(collision.gameObject.tag == "WBC"){
+		Debug.Log("WBC");
 		audio.PlayOneShot(collisionWBC);
 		
-//		Destroy(gameObject);
-//		Destroy(other.gameObject);
-		
-		}else if(other.gameObject.tag == "NPC"){
-		Debug.Log("RBC");
+		}else if(collision.gameObject.tag == "NPC"){
+		Debug.Log("NPC");
 		audio.PlayOneShot(collisionNPC);
 		
-		} else if(other.gameObject.tag == "BVW"){
+		} else if(collision.gameObject.tag == "BVW"){
 		
 		audio.PlayOneShot(collisionBVW);
 		
-		}else if(other.gameObject.tag == "TargetCell"){
+		}else if(collision.gameObject.tag == "TargetCell"){
 		
 		audio.PlayOneShot(TargetCell);
 		
