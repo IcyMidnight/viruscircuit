@@ -10,7 +10,7 @@ private var virusMeterOn : boolean = false;
 
 var Player : GameObject;
 
-var EndGame : boolean = true;
+var EndGame : boolean = false;
 
 var Skin : GUISkin;
 
