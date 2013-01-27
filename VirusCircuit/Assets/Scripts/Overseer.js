@@ -44,7 +44,7 @@ function Start () {
 	CreateRedBloodPool();
 	CreateWhiteBloodPool();
 	CreateBgPool();
-	StartBG();
+//	StartBG();
 	StartRedBloodCells();
 	StartBackgroundCells();
 }
