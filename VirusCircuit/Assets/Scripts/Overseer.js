@@ -7,6 +7,13 @@ var Mover : GameObject;
 var CameraSpeed = 4;
 var CameraTravelVector : Vector3 = Vector3(CameraSpeed, 0, 0);
 var CellVector : Vector3 = Vector3(CameraSpeed, 0, 0);
+// 0 - Starting, 1 - entering target area, 2 - inside target aread, 3 - leaving target area, 4 - heading to end
+var gamePhase : int = 0;
+
+var CameraStartPositions : Hashtable = new Hashtable();
+var CameraTargetPositions : Hashtable = new Hashtable();
+var CameraEndPositions : Hashtable = new Hashtable();
+var CameraAnimStartTime : float;
 
 var LevelSegmentVectors : Hashtable = new Hashtable();
 
@@ -61,6 +68,8 @@ function StartPlayerMoving(){
 
 //All of the initial instantiations
 function Start () {
+	gamePhase = 0;
+
 	Generator.transform.position.x = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,0,13)).x+10;
 	Destroyer.transform.position.x = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,0,13)).x-15;
 	
@@ -72,6 +81,14 @@ function Start () {
 //	StartBG();
 	StartRedBloodCells();
 	StartBackgroundCells();
+	
+	CameraTargetPositions[Mover] = Vector3(320, 40, -80);
+	CameraTargetPositions[Generator] = Vector3(272, -0.6213219, -71);
+	CameraTargetPositions[Destroyer] = Vector3(312, -0.6213219, -39);
+	
+	CameraEndPositions[Mover] = Vector3(312, -0.6213219, -50);
+	CameraEndPositions[Generator] = Vector3(312, -0.6213219, -28.15);
+	CameraEndPositions[Destroyer] = Vector3(312, -0.6213219, -72.38);
 }
 
 function Update () {
@@ -151,36 +168,71 @@ function KeepPlayerInView(){
 
 //Move the camera at a set speed
 function MoveCamera(mainCam : Camera, objectToMove : GameObject){
-	var currentSegmentCollider : Collider = this.GetComponent(CameraUtils).GetCurrentLevelSegment(mainCam);
-	var forwardVector : Vector3 = CameraTravelVector;
-	
-	if (currentSegmentCollider != null) {
-		//Debug.Log(LevelSegmentVectors[currentSegmentCollider]);
-		var cachedValue = LevelSegmentVectors[currentSegmentCollider];
-		if (cachedValue == null) {
-			//Debug.Log("No forward vector");
-			var segmentForward : Vector3 = currentSegmentCollider.transform.forward;
-			var angleBetween : float = Vector3.Angle(CameraTravelVector, segmentForward);
-			//Debug.Log(CameraTravelVector + " <-> " + segmentForward + " -- " + angleBetween);
-			if (angleBetween < -90.0 || angleBetween > 90.0) {
-				segmentForward *= -1;
+	if (gamePhase == 0 || gamePhase == 4) {
+		var currentSegmentCollider : Collider = this.GetComponent(CameraUtils).GetCurrentLevelSegment(mainCam);
+		var forwardVector : Vector3 = CameraTravelVector;
+		var LerpPos : float;
+		
+		if (currentSegmentCollider != null) {
+			//Debug.Log(LevelSegmentVectors[currentSegmentCollider]);
+			var cachedValue = LevelSegmentVectors[currentSegmentCollider];
+			if (cachedValue == null) {
+				//Debug.Log("No forward vector");
+				var segmentForward : Vector3 = currentSegmentCollider.transform.forward;
+				var angleBetween : float = Vector3.Angle(CameraTravelVector, segmentForward);
+				//Debug.Log(CameraTravelVector + " <-> " + segmentForward + " -- " + angleBetween);
+				if (angleBetween < -90.0 || angleBetween > 90.0) {
+					segmentForward *= -1;
+				}
+				segmentForward.Normalize();
+				LevelSegmentVectors[currentSegmentCollider] = segmentForward;
+				forwardVector = segmentForward;
+			} else {
+				if (currentSegmentCollider.transform.parent.CompareTag("TargetArea")) {
+					enterTargetArea();
+				} else {
+					forwardVector = cachedValue;
+					CameraTravelVector = forwardVector;
+				}
+				//Debug.Log("Cached Vector" + forwardVector);
 			}
-			segmentForward.Normalize();
-			LevelSegmentVectors[currentSegmentCollider] = segmentForward;
-			forwardVector = segmentForward;
+		}
+	
+		objectToMove.transform.Translate(Time.deltaTime * forwardVector * CameraSpeed);
+		
+		//Mover.transform.position.x = Player.transform.position.x;
+		//Mover.transform.position.z = Player.transform.position.z;
+	} else if (gamePhase == 1) {
+		LerpPos = (Time.time - CameraAnimStartTime) / 1.0;
+		if (LerpPos > 1.0) {
+			gamePhase = 2;
 		} else {
-			forwardVector = cachedValue;
-			CameraTravelVector = forwardVector;
-			//Debug.Log("Cached Vector" + forwardVector);
+			objectToMove.transform.position = Vector3.Lerp(CameraStartPositions[objectToMove], CameraTargetPositions[objectToMove], LerpPos);
+		}
+	} else if (gamePhase == 3) {
+		LerpPos = (Time.time - CameraAnimStartTime) / 1.0;
+		if (LerpPos > 1.0) {
+			gamePhase = 4;
+		} else {
+			objectToMove.transform.position = Vector3.Lerp(CameraTargetPositions[objectToMove], CameraEndPositions[objectToMove], LerpPos);
 		}
 	}
-
-	objectToMove.transform.Translate(Time.deltaTime * forwardVector * CameraSpeed);
-	
-	//Mover.transform.position.x = Player.transform.position.x;
-	//Mover.transform.position.z = Player.transform.position.z;
 }
 
+function enterTargetArea() {
+	gamePhase = 1;
+	CameraStartPositions[Mover] = Mover.transform.position;
+	CameraStartPositions[Generator] = Generator.transform.position;
+	CameraStartPositions[Destroyer] = Destroyer.transform.position;
+
+	CameraAnimStartTime = Time.time;
+}
+
+function exitTargetArea() {
+	gamePhase = 2;
+
+	CameraAnimStartTime = Time.time;
+}
 
 
 function PushFromVectorBelow(object : GameObject){
