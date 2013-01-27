@@ -285,7 +285,8 @@ function CreateRedBloodCell(cell : GameObject){
 }
 
 function CreateWhiteBloodCell(){
-	var position : Vector3 = Vector3(Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,0,13)).x+5, 0, Random.Range(-4.5, 4.5));
+	var position : Vector3 = RandomCircle(Generator.transform.position, 4.5);
+//	var position : Vector3 = Vector3(Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,0,13)).x+5, 0, Random.Range(-4.5, 4.5));
 	
 	var lastIndex : int = (ReserveWhiteBloodPool.Count - 1);
 	
