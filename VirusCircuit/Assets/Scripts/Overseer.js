@@ -7,13 +7,22 @@ var Mover : GameObject;
 var Player : GameObject;
 
 var redBloodCell : GameObject;
+
 var whiteBloodCell : GameObject;
+
+var backgroundRedBloodCell : GameObject;
+
 var BgTiles : GameObject[] = new GameObject[3];
 
 private var BloodCellCounter : int = 0;
 
+
 private var RedBloodPool : GameObject[] = new GameObject[30];
 private var WhiteBloodPool = new Array();
+
+
+private var BackgroundRedBloodPool : GameObject[] = new GameObject[30];
+
 
 private var BgArray : GameObject[] = new GameObject[30];
 private var loopOfCells : boolean = false;
@@ -25,8 +34,9 @@ var lastWhiteCell = 0;
 function Start () {
 	CreateRedBloodPool();
 	CreateBgPool();
-//	StartBG();
+	StartBG();
 	StartRedBloodCells();
+	StartBackgroundCells();
 }
 
 function Update () {
@@ -39,7 +49,11 @@ function Update () {
 
 	for(x in RedBloodPool){
 		PushWithFlow(x);
-		CheckPosition(x, Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,0,0)).x-2);
+		CheckPosition(x, Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,0,13)).x-2);
+	}
+	for(x in BackgroundRedBloodPool){
+		PushWithFlow(x);
+		CheckBackgroundPosition(x, Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,0,15)).x-2);
 	}
 	
 	for(cell in WhiteBloodPool){
@@ -56,9 +70,9 @@ function Update () {
 
 //This keeps the player from moving off the screen in either the right or left directions
 function KeepPlayerInView(){
-	var farLeft : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(50,100,0)).x;
+	var farLeft : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(50,0,13)).x;
 	
-	var farRight : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width-50,100,0)).x;
+	var farRight : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width-50,0,13)).x;
 	
 
 	if(Player.transform.position.x < farLeft){
@@ -100,7 +114,10 @@ function CreateBgPool(){
 //Make a pool of blood cells to use as needed
 function CreateRedBloodPool(){
 	for(var x = 0; x < RedBloodPool.length; x++){
-		RedBloodPool[x] = Instantiate(redBloodCell, Vector3(0,0,20+x*1.5), Quaternion.identity);
+
+		RedBloodPool[x] = Instantiate(redBloodCell, Vector3(300,0,20+x*1.5), Quaternion.identity);
+		BackgroundRedBloodPool[x] = Instantiate(redBloodCell, Vector3(300,0,20+x*1.5), Quaternion.identity);
+		BackgroundRedBloodPool[x].transform.localScale = Vector3(.8,.8,.8);
 	}
 }
 
@@ -150,7 +167,7 @@ function CheckPositionAndKill(cell: GameObject, xDist : float){
 
 function CreateRedBloodCell(cell : GameObject){
 
-	cell.transform.position = Vector3(Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,100,0)).x+5, 0, Random.Range(-4.5, 4.5));
+	cell.transform.position = Vector3(Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,0,13)).x+5, 0, Random.Range(-4.5, 4.5));
 	cell.rigidbody.velocity = Vector3(0,0,0);
 	cell.transform.rotation.eulerAngles = Vector3(0,0,0);
 	
@@ -162,6 +179,7 @@ function CreateRedBloodCell(cell : GameObject){
 	}
 }
 
+
 function CreateWhiteBloodCell(){
 	var position : Vector3 = Vector3(Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,100,0)).x+5, 0, Random.Range(-4.5, 4.5));
 	WhiteBloodPool.Push(Instantiate(whiteBloodCell, position, Quaternion.identity));
@@ -170,3 +188,29 @@ function CreateWhiteBloodCell(){
 	whiteBloodCell.rigidbody.velocity = Vector3(0,0,0);
 	whiteBloodCell.transform.rotation.eulerAngles = Vector3(0,0,0);
 }
+
+//Checks the location of the cells and restarts them 
+function CheckBackgroundPosition(cell: GameObject, xDist : float){
+	if(cell.transform.position.x < xDist){
+		CreateBackgroundCell(cell);
+	}
+}
+function CreateBackgroundCell(cell : GameObject){
+
+	cell.transform.position = Vector3(Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,0,14)).x+5, Random.Range(-1,-3), Random.Range(-3, 3));
+	cell.rigidbody.velocity = Vector3(0,0,0);
+	cell.transform.rotation.eulerAngles = Vector3(0,0,0);
+}		
+//Begin the flow of cells
+function StartBackgroundCells(){
+	var x : int = 0;
+	while(loopOfCells == false){
+		CreateBackgroundCell(BackgroundRedBloodPool[x]);
+		x++;
+		yield WaitForSeconds(1.5);
+		if(x==BackgroundRedBloodPool.length-1){
+			break;
+		}
+	}
+}	
+

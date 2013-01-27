@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c273910684767334faa3a9b92187a090
+guid: ba6a41dc489914734857bb5924eb70ad
 ModelImporter:
   serializedVersion: 14
   fileIDToRecycleName:
@@ -7,17 +7,19 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: Cylinder001
-    6400000: //RootNode
-    11100000: //RootNode
+    4300000: pPlane1
+    4300002: nurbsToPoly1
+    4300004: pCylinder1
+    4300006: waterPlaneMesh
+    100100000: DataTemplate __Singleton__
   materials:
     importMaterials: 1
-    materialName: 0
+    materialName: 3
     materialSearch: 1
   animations:
-    generateAnimations: 4
+    generateAnimations: 0
     bakeSimulation: 0
-    splitAnimations: 1
+    splitAnimations: 0
     animationCompression: 1
     animationRotationError: .5
     animationPositionError: .5
@@ -29,19 +31,19 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 1
+    addColliders: 0
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMesh: 0
     keepQuads: 0
     secondaryUVAngleDistortion: 8
-    secondaryUVAreaDistortion: 15.000001
+    secondaryUVAreaDistortion: 15
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
+    splitTangentsAcrossUV: 0
     normalImportMode: 0
     tangentImportMode: 1
   humanDescription:
