@@ -1,13 +1,15 @@
 #pragma strict
 var LoadingBar : Texture[] = new Texture[7];
-var LoadingBarRect : Rect;
-var LoadingBarNum : int = -1;
+@HideInInspector var LoadingBarRect : Rect;
+@HideInInspector var LoadingBarNum : int = -1;
 
 var HealthBar : Texture[] = new Texture[11];
-var HealthBarRect : Rect;
-var HealthBarNum : int = -1;
+@HideInInspector var HealthBarRect : Rect;
+@HideInInspector var HealthBarNum : int = 9;
 
+var Player : GameObject;
 
+@HideInInspector var GameOver : boolean = false;
 
 function Start () {
 
@@ -18,16 +20,21 @@ HealthBarRect = Rect(20,Screen.height-50,512,64);
 
 function Update () {
 
-if(Input.GetButtonDown("Fire1")) {
-LoadingBarNum++;
-HealthBarNum++;
-}
+HealthBarNum = 9 - Player.GetComponent(PlayerCollisionScript).WBCCollisionCounter;
+
+if(HealthBarNum < 1){
+	GameOver = true;
+	}
 
 }
 
 function OnGUI(){
 	var LoadingBarWin = GUI.Window(0, LoadingBarRect, LoadingBarWindow, "");
 	var HealthBarWin = GUI.Window(1, HealthBarRect, HealthBarWindow, "");
+	
+	if(GameOver == true){
+		GUI.Box(Rect(20,20,Screen.width-40,Screen.height-40),"GAME OVER");
+	}
 }
 
 	
@@ -59,6 +66,7 @@ function HealthBarWindow (windowID : int) {
 
     if(HealthBarNum >= 0){ 
 	    GUI.DrawTexture(Rect(112,220,400,32), HealthBar[0]);
+	    GUI.DrawTexture(Rect(20,0,64,64), HealthBar[10]);
     }
     if(HealthBarNum >= 1) 
     
