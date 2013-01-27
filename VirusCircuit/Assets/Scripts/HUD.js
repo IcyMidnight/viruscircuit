@@ -18,6 +18,9 @@ var Skin : GUISkin;
 
 private var GameOver : boolean = false;
 
+var GameOverTexture : Texture;
+
+
 function Start () {
 
 LoadingBarRect = Rect(Screen.width-522,0,512,64);
@@ -56,13 +59,20 @@ function OnGUI(){
 	var HealthBarWin = GUI.Window(1, HealthBarRect, HealthBarWindow, "");
 	
 	if(GameOver == true){
-		GUI.Box(Rect(20,20,Screen.width-40,Screen.height-40),"GAME OVER");
+		GUI.DrawTexture(Rect(Screen.width/2-512, 200, 1024, 128),GameOverTexture);
+		
+		if(GUI.Button(Rect(Screen.width/2-100, 375, 200, 100), "PLAY AGAIN?")){
+			Application.LoadLevel(1);
+		}
 		Player.SetActive(false);
 	}
 	
 	if(EndGame == true){
-	GUI.Box(Rect(20,20,Screen.width-40,Screen.height-40),"CONGRATULATIONS, YOU WON!");
+	GUI.Box(Rect(Screen.width/2-512, 200, 1024, 128),"CONGRATULATIONS, YOU WON!");
 		Player.SetActive(false);
+		if(GUI.Button(Rect(Screen.width/2-100, 375, 200, 100), "PLAY AGAIN?")){
+			Application.LoadLevel(1);
+		}
 		}
 }
 
