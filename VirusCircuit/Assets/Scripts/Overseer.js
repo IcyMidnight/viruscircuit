@@ -220,10 +220,7 @@ function PushWithFlow(object : GameObject){
 function PlayerFlow(object : GameObject){
 	object.rigidbody.AddForce(Vector3(2,0,0));
 }
-	
-function OnGUI(){
-	GUI.Box(Rect(0,0,200,200),"");
-	}
+
 
 
 
