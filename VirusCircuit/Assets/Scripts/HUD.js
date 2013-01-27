@@ -42,7 +42,7 @@ if(Player.transform.position.x > 295){
 		virusMeterOn = true;
 	}
 	
-if(Player.transform.position.x < 181 && Player.transform.position.z > 295){
+if(Player.transform.position.x < 181 && Player.transform.position.z > 56){
 		EndGame = true;
 	}
 	
@@ -73,7 +73,8 @@ function OnGUI(){
 		if(GUI.Button(Rect(Screen.width/2-100, 375, 200, 100), "PLAY AGAIN?")){
 			Application.LoadLevel(1);
 		}
-		}
+	Player.SetActive(false);
+	}
 }
 
 	
