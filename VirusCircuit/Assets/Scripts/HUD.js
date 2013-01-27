@@ -86,7 +86,7 @@ function LoadingBarWindow (windowID : int) {
     
     GUI.DrawTexture(Rect(60,7,400,26), LoadingBar[4]);
     if(LoadingBarNum >= 5) {
-    	if(runOnce = false){
+    	if(runOnce == false){
 	    	this.gameObject.GetComponent(Overseer).exitTargetArea();
 	    	runOnce = true;
 	    }
