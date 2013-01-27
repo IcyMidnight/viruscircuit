@@ -49,5 +49,5 @@ public function FindNextLevelSegment(currentSegment : Transform, forward : Vecto
 	var currentCentre : Vector3 = currentSegment.transform.position;
 	var normalizedForward : Vector3 = forward.normalized;
 	var newStart = currentCentre + (normalizedForward * length);
-	return GetCurrentLevelSegment(newStart);
+	//return GetCurrentLevelSegment(newStart);
 }
