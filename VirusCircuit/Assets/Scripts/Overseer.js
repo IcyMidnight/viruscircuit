@@ -25,7 +25,7 @@ var lastWhiteCell = 0;
 function Start () {
 	CreateRedBloodPool();
 	CreateBgPool();
-	StartBG();
+//	StartBG();
 	StartRedBloodCells();
 }
 

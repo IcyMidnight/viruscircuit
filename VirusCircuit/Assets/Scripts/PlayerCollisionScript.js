@@ -1,5 +1,5 @@
 #pragma strict
-var collisionRBC : AudioClip;
+
 var collisionWBC : AudioClip;
 var collisionNPC : AudioClip;
 var collisionBVW : AudioClip;
@@ -7,13 +7,6 @@ var TargetCell : AudioClip;
 
 
 function OnCollisionEnter (other : Collider) {
-
-		//Play audio for Red Blood Cell Collision
-		if(other.gameObject.tag == "RBC"){
-		
-		audio.PlayOneShot(collisionRBC);
-		
-		}
 		
 		
 		//Play audio for White Blood Cell Collision
