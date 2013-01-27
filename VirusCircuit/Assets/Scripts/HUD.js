@@ -10,13 +10,14 @@ private var virusMeterOn : boolean = false;
 
 var Player : GameObject;
 
+
 var Skin : GUISkin;
 
 private var GameOver : boolean = false;
 
 function Start () {
 
-LoadingBarRect = Rect(Screen.width-522,20,512,64);
+LoadingBarRect = Rect(Screen.width-522,0,512,64);
 HealthBarRect = Rect(-35,0,512,64);
 
 }
@@ -57,25 +58,26 @@ function OnGUI(){
 function LoadingBarWindow (windowID : int) {
 
     if(LoadingBarNum >= 0){ 
-	    GUI.DrawTexture(Rect(20,0,40,40), LoadingBar[6]);
-	    GUI.DrawTexture(Rect(112,20,400,32), LoadingBar[0]);
+	    GUI.DrawTexture(Rect(460,0,40,40), LoadingBar[6]);
+	    GUI.DrawTexture(Rect(60,7,400,26), LoadingBar[0]);
     }
     if(LoadingBarNum >= 1) 
     
-    GUI.DrawTexture(Rect(112,20,400,32), LoadingBar[1]);
+    GUI.DrawTexture(Rect(60,7,400,26), LoadingBar[1]);
     if(LoadingBarNum >= 2) 
     
-    GUI.DrawTexture(Rect(112,20,400,32), LoadingBar[2]);
+    GUI.DrawTexture(Rect(60,7,400,26), LoadingBar[2]);
     if(LoadingBarNum >= 3) 
     
-    GUI.DrawTexture(Rect(112,20,400,32), LoadingBar[3]);
+    GUI.DrawTexture(Rect(60,7,400,26), LoadingBar[3]);
     if(LoadingBarNum >= 4) 
     
-    GUI.DrawTexture(Rect(112,20,400,32), LoadingBar[4]);
-    if(LoadingBarNum >= 5) 
+    GUI.DrawTexture(Rect(60,7,400,26), LoadingBar[4]);
+    if(LoadingBarNum >= 5) {
     
-    GUI.DrawTexture(Rect(112,20,400,32), LoadingBar[5]);
-    
+	    this.gameObject.GetComponent(Overseer).exitTargetArea();
+	    GUI.DrawTexture(Rect(60,7,400,26), LoadingBar[5]);
+    }
 }
 
 function HealthBarWindow (windowID : int) {
