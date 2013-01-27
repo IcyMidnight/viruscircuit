@@ -58,7 +58,7 @@ function Update () {
 	
 	for(cell in WhiteBloodPool){
 		PushWithFlow(cell);
-		CheckPositionAndKill(cell, Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,0,0)).x-2);
+//		CheckPositionAndKill(cell, Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,0,0)).x-2);
 	}
 
 	var floorTime : int = Mathf.Floor(Time.fixedTime);
@@ -161,7 +161,7 @@ function CheckPosition(cell: GameObject, xDist : float){
 function CheckPositionAndKill(cell: GameObject, xDist : float){
 	if(cell.transform.position.x < xDist){
 		WhiteBloodPool.Remove(cell);
-		Destroy(cell);
+//		Destroy(cell);
 	}
 }
 
