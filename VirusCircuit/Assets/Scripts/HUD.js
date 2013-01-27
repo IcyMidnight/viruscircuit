@@ -12,6 +12,8 @@ var Player : GameObject;
 
 var EndGame : boolean = false;
 
+private var runOnce : boolean = false;
+
 var Skin : GUISkin;
 
 private var GameOver : boolean = false;
@@ -84,8 +86,10 @@ function LoadingBarWindow (windowID : int) {
     
     GUI.DrawTexture(Rect(60,7,400,26), LoadingBar[4]);
     if(LoadingBarNum >= 5) {
-    
-	    this.gameObject.GetComponent(Overseer).exitTargetArea();
+    	if(runOnce = false){
+	    	this.gameObject.GetComponent(Overseer).exitTargetArea();
+	    	runOnce = true;
+	    }
 	    GUI.DrawTexture(Rect(60,7,400,26), LoadingBar[5]);
     }
 }
