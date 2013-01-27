@@ -3,7 +3,7 @@
 var collisionWBC : AudioClip;
 var collisionNPC : AudioClip;
 var collisionBVW : AudioClip;
-var TargetCell : AudioClip;
+var TargetCellAttack : AudioClip;
 
 
 
@@ -26,7 +26,7 @@ function OnCollisionEnter (other : Collision) {
 			
 			}else if(other.gameObject.tag == "TargetCell"){
 			
-			audio.PlayOneShot(TargetCell);
+			audio.PlayOneShot(TargetCellAttack);
  		
 
 }
