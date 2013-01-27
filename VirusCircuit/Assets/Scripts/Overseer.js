@@ -20,22 +20,22 @@ var BgTiles : GameObject[] = new GameObject[3];
 var pushLayerMask : LayerMask;
 
 //For generation of cells ahead of player
-var generationSpace : GameObject;
+var Generator : GameObject;
 var FrontCamera : Camera;
-
-private var BloodCellCounter : int = 0;
+var DestroyCam : Camera;
+var Destroyer : GameObject;
 
 private var cameraUtils : CameraUtils = new CameraUtils();
 
 
-private var RedBloodPool : GameObject[] = new GameObject[30];
+private var RedBloodPool : GameObject[] = new GameObject[60];
 
 private var WhiteBloodPoolSize : int = 30;  // Number of cells in the active and reserve pools.
 private var ReserveWhiteBloodPool : List.<GameObject> = new List.<GameObject>();
 private var ActiveWhiteBloodPool : List.<GameObject> = new List.<GameObject>();
 private var WhiteBooldCellsToDeactivate : List.<GameObject> = new List.<GameObject>();
 
-private var BackgroundRedBloodPool : GameObject[] = new GameObject[30];
+private var BackgroundRedBloodPool : GameObject[] = new GameObject[60];
 
 
 private var BgArray : GameObject[] = new GameObject[30];
@@ -51,6 +51,9 @@ var lastWhiteCell = 0;
 
 //All of the initial instantiations
 function Start () {
+	Generator.transform.position.x = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,0,13)).x+10;
+	Destroyer.transform.position.x = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,0,13)).x-15;
+
 	CreateRedBloodPool();
 	CreateWhiteBloodPool();
 	CreateBgPool();
@@ -67,13 +70,16 @@ function Update () {
 	PlayerFlow(Player);
 
 	MoveCamera(mainCamera, Mover);
-	MoveCamera(FrontCamera, generationSpace);
+	MoveCamera(FrontCamera, Generator);
+	
+	MoveCamera(DestroyCam, Destroyer);
+	
 	KeepPlayerInView();
 
 	for(x in RedBloodPool){
 		PushFromVectorBelow(x);
 //		PushWithFlow(x);
-		CheckPosition(x, mainCamera.camera.ScreenToWorldPoint(Vector3(0,0,13)).x-2);
+//		CheckPosition(x, mainCamera.camera.ScreenToWorldPoint(Vector3(0,0,13)).x-2);
 	}
 	for(x in BackgroundRedBloodPool){
 		PushFromVectorBelow(x);
@@ -253,7 +259,7 @@ function StartRedBloodCells(){
 //Checks the location of the cells and restarts them 
 function CheckPosition(cell: GameObject, xDist : float){
 	if(cell.transform.position.x < xDist){
-		CreateRedBloodCell(cell);
+//		CreateRedBloodCell(cell);
 	}
 }
 
@@ -266,18 +272,12 @@ function CheckPositionAndKill(cell: GameObject, xDist : float){
 }
 
 function CreateRedBloodCell(cell : GameObject){
-	cell.transform.position = RandomCircle(generationSpace.transform.position, 4.5);
+	cell.transform.position = RandomCircle(Generator.transform.position, 4.5);
 	
 //	cell.transform.position = Vector3(Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,0,13)).x+5, 0, Random.Range(-4.5, 4.5));
 	cell.rigidbody.velocity = Vector3(0,0,0);
 	cell.transform.rotation.eulerAngles = Vector3(0,0,0);
 	
-	if(BloodCellCounter < RedBloodPool.length-1){
-		BloodCellCounter++;
-	}
-	else{
-		BloodCellCounter = 0;
-	}
 }
 
 function CreateWhiteBloodCell(){
