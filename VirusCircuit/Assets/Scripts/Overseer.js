@@ -142,15 +142,15 @@ function WhiteCellUpdate(cell : GameObject, mainCamera : Camera) {
 
 //This keeps the player from moving off the screen in either the right or left directions
 function KeepPlayerInView(){
-	if(gamePhase != 2){
 	
-		var farLeft : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(50,0,13)).x;
+	
+		var farLeft : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(50,0,Mover.transform.position.y+13.6)).x;
 		
-		var farRight : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width-50,0,13)).x;
+		var farRight : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width-50,0,Mover.transform.position.y+13.6)).x;
 		
-		var farTop : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,50,13)).z;
+		var farTop : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,50,Mover.transform.position.y+13.6)).z;
 		
-		var farBottom : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,Screen.height-50,13)).z;
+		var farBottom : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,Screen.height-50,Mover.transform.position.y+13.6)).z;
 		
 		
 		if(Player.transform.position.x < farLeft){
@@ -165,7 +165,7 @@ function KeepPlayerInView(){
 		if(Player.transform.position.z < farTop){
 			Player.transform.position.z = farTop;
 		}
-	}
+	
 }
 
 //Move the camera at a set speed
