@@ -4,6 +4,8 @@ import System.Collections.Generic;
 var currentBloodSpeed : float = 1.0;
 
 var Mover : GameObject;
+var CameraSpeed = 4;
+var CameraTravelVector : Vector3 = Vector3(CameraSpeed, 0, 0);
 
 var Player : GameObject;
 
@@ -50,14 +52,14 @@ function Start () {
 }
 
 function Update () {
+	
+	var mainCamera : Camera = Mover.Find("Main Camera").camera;
 
 	PushWithFlow(Player);
 	PlayerFlow(Player);
 
-	MoveCamera();
+	MoveCamera(mainCamera);
 	KeepPlayerInView();
-	
-	var mainCamera : Camera = Mover.Find("Main Camera").camera;
 
 	for(x in RedBloodPool){
 		PushWithFlow(x);
@@ -83,9 +85,6 @@ function Update () {
 		lastWhiteCell = floorTime;
 		CreateWhiteBloodCell();
 	}
-	
-	var segment = this.GetComponent(CameraUtils).GetCurrentLevelSegment(mainCamera);
-	Debug.Log("Segment: " + segment);
 }
 
 function WhiteCellUpdate(cell : GameObject, mainCamera : Camera) {
@@ -110,10 +109,23 @@ function KeepPlayerInView(){
 }
 
 //Move the camera at a set speed
-function MoveCamera(){
-	Mover.transform.position.x = Time.time*4;
-//	Mover.transform.position.x += Mathf.Abs(Mathf.Sin(Time.time))/10;
-//	Mover.transform.position.x += HeartBeat(Time.time, 5)*.05;
+function MoveCamera(mainCamera : Camera){
+	var currentSegmentCollider : Collider = this.GetComponent(CameraUtils).GetCurrentLevelSegment(mainCamera);
+	
+	if (currentSegmentCollider != null) {
+		var segmentForward : Vector3 = currentSegmentCollider.transform.forward;
+		var angleBetween : float = Vector3.Angle(CameraTravelVector, segmentForward);
+		//Debug.Log(CameraTravelVector + " <-> " + segmentForward + " -- " + angleBetween);
+		if (angleBetween < -90.0 || angleBetween > 90.0) {
+			segmentForward *= -1;
+		}
+		CameraTravelVector = CameraSpeed * segmentForward;
+	}
+
+	Mover.transform.Translate(Time.deltaTime * CameraTravelVector);
+	
+	//Mover.transform.position.x = Player.transform.position.x;
+	//Mover.transform.position.z = Player.transform.position.z;
 }
 
 function PushWithFlow(object : GameObject){

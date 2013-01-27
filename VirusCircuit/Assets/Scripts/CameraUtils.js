@@ -8,10 +8,8 @@ public function GetCurrentLevelSegment(origin : Camera) {
 		//var body : Rigidbody = hitInfo.rigidbody;
 		var collider : Collider = hitInfo.collider;
 		if (collider != null) {
-			return collider.name;
-		} else {
-			return "no body";
+			return collider;
 		}
 	}
-	return "No Hit";
+	return null;
 }
