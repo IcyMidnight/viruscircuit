@@ -6,6 +6,8 @@ var currentBloodSpeed : float = 1.0;
 var Mover : GameObject;
 var CameraSpeed = 4;
 var CameraTravelVector : Vector3 = Vector3(CameraSpeed, 0, 0);
+var CellVector : Vector3 = Vector3(CameraSpeed, 0, 0);
+
 
 var Player : GameObject;
 
@@ -14,6 +16,8 @@ var backgroundRedBloodCell : GameObject;
 var whiteBloodCell : GameObject;
 
 var BgTiles : GameObject[] = new GameObject[3];
+
+var pushLayerMask : LayerMask;
 
 //For generation of cells ahead of player
 var generationSpace : GameObject;
@@ -67,11 +71,13 @@ function Update () {
 	KeepPlayerInView();
 
 	for(x in RedBloodPool){
-		PushWithFlow(x);
+		PushFromVectorBelow(x);
+//		PushWithFlow(x);
 		CheckPosition(x, mainCamera.camera.ScreenToWorldPoint(Vector3(0,0,13)).x-2);
 	}
 	for(x in BackgroundRedBloodPool){
-		PushWithFlow(x);
+		PushFromVectorBelow(x);
+//		PushWithFlow(x);
 		CheckBackgroundPosition(x, mainCamera.camera.ScreenToWorldPoint(Vector3(0,0,15)).x-2);
 	}
 	
@@ -105,11 +111,22 @@ function KeepPlayerInView(){
 	
 	var farRight : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width-50,0,13)).x;
 	
+	var farTop : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,50,13)).z;
+	
+	var farBottom : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,Screen.height-50,13)).z;
+	
+	
 	if(Player.transform.position.x < farLeft){
 		Player.transform.position.x = farLeft;
 	}
 	if(Player.transform.position.x > farRight){
 		Player.transform.position.x = farRight;
+	}	
+	if(Player.transform.position.z > farBottom){
+		Player.transform.position.z = farBottom;
+	}
+	if(Player.transform.position.z < farTop){
+		Player.transform.position.z = farTop;
 	}
 }
 
@@ -132,6 +149,45 @@ function MoveCamera(mainCam : Camera, objectToMove : GameObject){
 	//Mover.transform.position.x = Player.transform.position.x;
 	//Mover.transform.position.z = Player.transform.position.z;
 }
+
+
+
+function PushFromVectorBelow(object : GameObject){
+
+
+
+	var hitInfo : RaycastHit;
+	if (Physics.Raycast(object.transform.position, Vector3(0, -1, 0), hitInfo, Mathf.Infinity, pushLayerMask)) {
+
+		var collider : Collider = hitInfo.collider;
+		if (collider != null) {
+			var currentSegmentCollider : Collider = collider;
+		}
+	}
+			
+	if (currentSegmentCollider != null) {
+		var segmentForward : Vector3 = currentSegmentCollider.transform.forward;
+		var angleBetween : float = Vector3.Angle(CellVector, segmentForward);
+		//Debug.Log(CameraTravelVector + " <-> " + segmentForward + " -- " + angleBetween);
+		if (angleBetween < -90.0 || angleBetween > 90.0) {
+			segmentForward *= -1;
+		}
+		CellVector = CameraSpeed * segmentForward;
+	}
+	
+	object.rigidbody.AddForce(Flow.flowAt(Time.time, CellVector));
+	
+
+	
+	
+	
+	
+	
+	
+}
+
+
+
 
 function PushWithFlow(object : GameObject){
 	object.rigidbody.AddForce(Flow.flowAt(Time.time, Vector3(1,0,0)));
@@ -276,7 +332,7 @@ function RandomCircle(center:Vector3, radius:float): Vector3 {
     var ang = Random.value * 360;
     var pos: Vector3;
     pos.x = center.x + radius * Mathf.Sin(ang * Mathf.Deg2Rad);
-    pos.y = center.y + radius * Mathf.Cos(ang * Mathf.Deg2Rad);
-    pos.z = center.z;
+    pos.z = center.z + radius * Mathf.Cos(ang * Mathf.Deg2Rad);
+    pos.y = center.y;
     return pos;
 }
