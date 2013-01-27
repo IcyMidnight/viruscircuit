@@ -35,6 +35,11 @@ var levelLayout : int[] = new int[10];
 
 var lastWhiteCell = 0;
 
+
+
+
+
+//All of the initial instantiations
 function Start () {
 	CreateRedBloodPool();
 	CreateWhiteBloodPool();
