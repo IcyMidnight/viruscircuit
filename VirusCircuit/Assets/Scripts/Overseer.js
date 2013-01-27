@@ -46,13 +46,24 @@ var levelLayout : int[] = new int[10];
 var lastWhiteCell = 0;
 
 
-
+function StartPlayerMoving(){
+	
+	while(Player.rigidbody.velocity.x < 5){
+		Player.rigidbody.AddForce(Vector3(25,0,0));
+		Debug.Log("moving");
+		yield;
+		
+		
+	}
+}
 
 
 //All of the initial instantiations
 function Start () {
 	Generator.transform.position.x = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,0,13)).x+10;
 	Destroyer.transform.position.x = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,0,13)).x-15;
+	
+	Player.transform.position.x +=.25;
 
 	CreateRedBloodPool();
 	CreateWhiteBloodPool();
@@ -182,13 +193,6 @@ function PushFromVectorBelow(object : GameObject){
 	}
 	
 	object.rigidbody.AddForce(Flow.flowAt(Time.time, CellVector));
-	
-
-	
-	
-	
-	
-	
 	
 }
 
