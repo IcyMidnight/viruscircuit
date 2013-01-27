@@ -15,6 +15,10 @@ var whiteBloodCell : GameObject;
 
 var BgTiles : GameObject[] = new GameObject[3];
 
+//For generation of cells ahead of player
+var generationSpace : GameObject;
+var FrontCamera : Camera;
+
 private var BloodCellCounter : int = 0;
 
 private var cameraUtils : CameraUtils = new CameraUtils();
@@ -58,7 +62,8 @@ function Update () {
 	PushWithFlow(Player);
 	PlayerFlow(Player);
 
-	MoveCamera(mainCamera);
+	MoveCamera(mainCamera, Mover);
+	MoveCamera(FrontCamera, generationSpace);
 	KeepPlayerInView();
 
 	for(x in RedBloodPool){
@@ -109,8 +114,8 @@ function KeepPlayerInView(){
 }
 
 //Move the camera at a set speed
-function MoveCamera(mainCamera : Camera){
-	var currentSegmentCollider : Collider = this.GetComponent(CameraUtils).GetCurrentLevelSegment(mainCamera);
+function MoveCamera(mainCam : Camera, objectToMove : GameObject){
+	var currentSegmentCollider : Collider = this.GetComponent(CameraUtils).GetCurrentLevelSegment(mainCam);
 	
 	if (currentSegmentCollider != null) {
 		var segmentForward : Vector3 = currentSegmentCollider.transform.forward;
@@ -122,7 +127,7 @@ function MoveCamera(mainCamera : Camera){
 		CameraTravelVector = CameraSpeed * segmentForward;
 	}
 
-	Mover.transform.Translate(Time.deltaTime * CameraTravelVector);
+	objectToMove.transform.Translate(Time.deltaTime * CameraTravelVector);
 	
 	//Mover.transform.position.x = Player.transform.position.x;
 	//Mover.transform.position.z = Player.transform.position.z;
@@ -205,7 +210,9 @@ function CheckPositionAndKill(cell: GameObject, xDist : float){
 }
 
 function CreateRedBloodCell(cell : GameObject){
-	cell.transform.position = Vector3(Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,0,13)).x+5, 0, Random.Range(-4.5, 4.5));
+	cell.transform.position = RandomCircle(generationSpace.transform.position, 4.5);
+	
+//	cell.transform.position = Vector3(Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,0,13)).x+5, 0, Random.Range(-4.5, 4.5));
 	cell.rigidbody.velocity = Vector3(0,0,0);
 	cell.transform.rotation.eulerAngles = Vector3(0,0,0);
 	
@@ -263,3 +270,13 @@ function StartBackgroundCells(){
 	}
 }	
 
+
+function RandomCircle(center:Vector3, radius:float): Vector3 {
+    // create random angle between 0 to 360 degrees
+    var ang = Random.value * 360;
+    var pos: Vector3;
+    pos.x = center.x + radius * Mathf.Sin(ang * Mathf.Deg2Rad);
+    pos.y = center.y + radius * Mathf.Cos(ang * Mathf.Deg2Rad);
+    pos.z = center.z;
+    return pos;
+}
