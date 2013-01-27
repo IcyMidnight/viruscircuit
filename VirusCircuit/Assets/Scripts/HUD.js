@@ -9,12 +9,14 @@ var HealthBar : Texture[] = new Texture[11];
 
 var Player : GameObject;
 
+var Skin : GUISkin;
+
 @HideInInspector var GameOver : boolean = false;
 
 function Start () {
 
 LoadingBarRect = Rect(Screen.width-522,20,512,64);
-HealthBarRect = Rect(20,Screen.height-50,512,64);
+HealthBarRect = Rect(-35,0,512,64);
 
 }
 
@@ -29,6 +31,9 @@ if(HealthBarNum < 1){
 }
 
 function OnGUI(){
+
+	GUI.skin = Skin;
+
 	var LoadingBarWin = GUI.Window(0, LoadingBarRect, LoadingBarWindow, "");
 	var HealthBarWin = GUI.Window(1, HealthBarRect, HealthBarWindow, "");
 	
@@ -41,7 +46,7 @@ function OnGUI(){
 function LoadingBarWindow (windowID : int) {
 
     if(LoadingBarNum >= 0){ 
-	    GUI.DrawTexture(Rect(20,0,64,64), LoadingBar[6]);
+	    GUI.DrawTexture(Rect(20,0,40,40), LoadingBar[6]);
 	    GUI.DrawTexture(Rect(112,20,400,32), LoadingBar[0]);
     }
     if(LoadingBarNum >= 1) 
@@ -65,35 +70,35 @@ function LoadingBarWindow (windowID : int) {
 function HealthBarWindow (windowID : int) {
 
     if(HealthBarNum >= 0){ 
-	    GUI.DrawTexture(Rect(112,220,400,32), HealthBar[0]);
-	    GUI.DrawTexture(Rect(20,0,64,64), HealthBar[10]);
+	    GUI.DrawTexture(Rect(112,7,400,26), HealthBar[0]);
+	    GUI.DrawTexture(Rect(50,0,40,40), HealthBar[10]);
     }
     if(HealthBarNum >= 1) 
     
-    GUI.DrawTexture(Rect(112,20,400,32), HealthBar[1]);
+    GUI.DrawTexture(Rect(112,7,400,26), HealthBar[1]);
     if(HealthBarNum >= 2) 
     
-    GUI.DrawTexture(Rect(112,20,400,32), HealthBar[2]);
+    GUI.DrawTexture(Rect(112,7,400,26), HealthBar[2]);
     if(HealthBarNum >= 3) 
     
-    GUI.DrawTexture(Rect(112,20,400,32), HealthBar[3]);
+    GUI.DrawTexture(Rect(112,7,400,26), HealthBar[3]);
     if(HealthBarNum >= 4) 
     
-    GUI.DrawTexture(Rect(112,20,400,32), HealthBar[4]);
+    GUI.DrawTexture(Rect(112,7,400,26), HealthBar[4]);
     if(HealthBarNum >= 5) 
     
-    GUI.DrawTexture(Rect(112,20,400,32), HealthBar[5]);
+    GUI.DrawTexture(Rect(112,7,400,26), HealthBar[5]);
     if(HealthBarNum >= 6) 
     
-    GUI.DrawTexture(Rect(112,20,400,32), HealthBar[6]);
+    GUI.DrawTexture(Rect(112,7,400,26), HealthBar[6]);
     if(HealthBarNum >= 7) 
     
-    GUI.DrawTexture(Rect(112,20,400,32), HealthBar[7]);
+    GUI.DrawTexture(Rect(112,7,400,26), HealthBar[7]);
     if(HealthBarNum >= 8) 
     
-    GUI.DrawTexture(Rect(112,20,400,32), HealthBar[8]);
+    GUI.DrawTexture(Rect(112,7,400,26), HealthBar[8]);
     if(HealthBarNum >= 9) 
     
-    GUI.DrawTexture(Rect(112,20,400,32), HealthBar[9]);
+    GUI.DrawTexture(Rect(112,7,400,26), HealthBar[9]);
     
 }
