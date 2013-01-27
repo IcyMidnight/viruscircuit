@@ -8,6 +8,7 @@ var CameraSpeed = 4;
 var CameraTravelVector : Vector3 = Vector3(CameraSpeed, 0, 0);
 var CellVector : Vector3 = Vector3(CameraSpeed, 0, 0);
 
+var LevelSegmentVectors : Hashtable = new Hashtable();
 
 var Player : GameObject;
 
@@ -152,13 +153,25 @@ function MoveCamera(mainCam : Camera, objectToMove : GameObject){
 	var currentSegmentCollider : Collider = this.GetComponent(CameraUtils).GetCurrentLevelSegment(mainCam);
 	
 	if (currentSegmentCollider != null) {
-		var segmentForward : Vector3 = currentSegmentCollider.transform.forward;
-		var angleBetween : float = Vector3.Angle(CameraTravelVector, segmentForward);
-		//Debug.Log(CameraTravelVector + " <-> " + segmentForward + " -- " + angleBetween);
-		if (angleBetween < -90.0 || angleBetween > 90.0) {
-			segmentForward *= -1;
+		//Debug.Log(LevelSegmentVectors[currentSegmentCollider]);
+		var cachedValue = LevelSegmentVectors[currentSegmentCollider];
+		var forwardVector : Vector3;
+		if (cachedValue == null) {
+			//Debug.Log("No forward vector");
+			var segmentForward : Vector3 = currentSegmentCollider.transform.forward;
+			var angleBetween : float = Vector3.Angle(CameraTravelVector, segmentForward);
+			//Debug.Log(CameraTravelVector + " <-> " + segmentForward + " -- " + angleBetween);
+			if (angleBetween < -90.0 || angleBetween > 90.0) {
+				segmentForward *= -1;
+			}
+			segmentForward.Normalize();
+			LevelSegmentVectors[currentSegmentCollider] = segmentForward;
+			forwardVector = segmentForward;
+		} else {
+			forwardVector = cachedValue;
+			//Debug.Log("Cached Vector" + forwardVector);
 		}
-		CameraTravelVector = CameraSpeed * segmentForward;
+		CameraTravelVector = CameraSpeed * forwardVector;
 	}
 
 	objectToMove.transform.Translate(Time.deltaTime * CameraTravelVector);
