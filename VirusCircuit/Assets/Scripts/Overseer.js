@@ -6,6 +6,8 @@ var currentBloodSpeed : float = 1.0;
 var Mover : GameObject;
 var CameraSpeed = 4;
 var CameraTravelVector : Vector3 = Vector3(CameraSpeed, 0, 0);
+var CellVector : Vector3 = Vector3(CameraSpeed, 0, 0);
+
 
 var Player : GameObject;
 
@@ -15,19 +17,25 @@ var whiteBloodCell : GameObject;
 
 var BgTiles : GameObject[] = new GameObject[3];
 
-private var BloodCellCounter : int = 0;
+var pushLayerMask : LayerMask;
+
+//For generation of cells ahead of player
+var Generator : GameObject;
+var FrontCamera : Camera;
+var DestroyCam : Camera;
+var Destroyer : GameObject;
 
 private var cameraUtils : CameraUtils = new CameraUtils();
 
 
-private var RedBloodPool : GameObject[] = new GameObject[30];
+private var RedBloodPool : GameObject[] = new GameObject[60];
 
 private var WhiteBloodPoolSize : int = 30;  // Number of cells in the active and reserve pools.
 private var ReserveWhiteBloodPool : List.<GameObject> = new List.<GameObject>();
 private var ActiveWhiteBloodPool : List.<GameObject> = new List.<GameObject>();
 private var WhiteBooldCellsToDeactivate : List.<GameObject> = new List.<GameObject>();
 
-private var BackgroundRedBloodPool : GameObject[] = new GameObject[30];
+private var BackgroundRedBloodPool : GameObject[] = new GameObject[60];
 
 
 private var BgArray : GameObject[] = new GameObject[30];
@@ -38,11 +46,25 @@ var levelLayout : int[] = new int[10];
 var lastWhiteCell = 0;
 
 
-
+function StartPlayerMoving(){
+	
+	while(Player.rigidbody.velocity.x < 5){
+		Player.rigidbody.AddForce(Vector3(25,0,0));
+		Debug.Log("moving");
+		yield;
+		
+		
+	}
+}
 
 
 //All of the initial instantiations
 function Start () {
+	Generator.transform.position.x = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,0,13)).x+10;
+	Destroyer.transform.position.x = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,0,13)).x-15;
+	
+	Player.transform.position.x +=.25;
+
 	CreateRedBloodPool();
 	CreateWhiteBloodPool();
 	CreateBgPool();
@@ -58,15 +80,21 @@ function Update () {
 	PushWithFlow(Player);
 	PlayerFlow(Player);
 
-	MoveCamera(mainCamera);
+	MoveCamera(mainCamera, Mover);
+	MoveCamera(FrontCamera, Generator);
+	
+	MoveCamera(DestroyCam, Destroyer);
+	
 	KeepPlayerInView();
 
 	for(x in RedBloodPool){
-		PushWithFlow(x);
-		CheckPosition(x, mainCamera.camera.ScreenToWorldPoint(Vector3(0,0,13)).x-2);
+		PushFromVectorBelow(x);
+//		PushWithFlow(x);
+//		CheckPosition(x, mainCamera.camera.ScreenToWorldPoint(Vector3(0,0,13)).x-2);
 	}
 	for(x in BackgroundRedBloodPool){
-		PushWithFlow(x);
+		PushFromVectorBelow(x);
+//		PushWithFlow(x);
 		CheckBackgroundPosition(x, mainCamera.camera.ScreenToWorldPoint(Vector3(0,0,15)).x-2);
 	}
 	
@@ -100,17 +128,28 @@ function KeepPlayerInView(){
 	
 	var farRight : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width-50,0,13)).x;
 	
+	var farTop : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,50,13)).z;
+	
+	var farBottom : float = Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(0,Screen.height-50,13)).z;
+	
+	
 	if(Player.transform.position.x < farLeft){
 		Player.transform.position.x = farLeft;
 	}
 	if(Player.transform.position.x > farRight){
 		Player.transform.position.x = farRight;
+	}	
+	if(Player.transform.position.z > farBottom){
+		Player.transform.position.z = farBottom;
+	}
+	if(Player.transform.position.z < farTop){
+		Player.transform.position.z = farTop;
 	}
 }
 
 //Move the camera at a set speed
-function MoveCamera(mainCamera : Camera){
-	var currentSegmentCollider : Collider = this.GetComponent(CameraUtils).GetCurrentLevelSegment(mainCamera);
+function MoveCamera(mainCam : Camera, objectToMove : GameObject){
+	var currentSegmentCollider : Collider = this.GetComponent(CameraUtils).GetCurrentLevelSegment(mainCam);
 	
 	if (currentSegmentCollider != null) {
 		var segmentForward : Vector3 = currentSegmentCollider.transform.forward;
@@ -122,11 +161,43 @@ function MoveCamera(mainCamera : Camera){
 		CameraTravelVector = CameraSpeed * segmentForward;
 	}
 
-	Mover.transform.Translate(Time.deltaTime * CameraTravelVector);
+	objectToMove.transform.Translate(Time.deltaTime * CameraTravelVector);
 	
 	//Mover.transform.position.x = Player.transform.position.x;
 	//Mover.transform.position.z = Player.transform.position.z;
 }
+
+
+
+function PushFromVectorBelow(object : GameObject){
+
+
+
+	var hitInfo : RaycastHit;
+	if (Physics.Raycast(object.transform.position, Vector3(0, -1, 0), hitInfo, Mathf.Infinity, pushLayerMask)) {
+
+		var collider : Collider = hitInfo.collider;
+		if (collider != null) {
+			var currentSegmentCollider : Collider = collider;
+		}
+	}
+			
+	if (currentSegmentCollider != null) {
+		var segmentForward : Vector3 = currentSegmentCollider.transform.forward;
+		var angleBetween : float = Vector3.Angle(CellVector, segmentForward);
+		//Debug.Log(CameraTravelVector + " <-> " + segmentForward + " -- " + angleBetween);
+		if (angleBetween < -90.0 || angleBetween > 90.0) {
+			segmentForward *= -1;
+		}
+		CellVector = CameraSpeed * segmentForward;
+	}
+	
+	object.rigidbody.AddForce(Flow.flowAt(Time.time, CellVector));
+	
+}
+
+
+
 
 function PushWithFlow(object : GameObject){
 	object.rigidbody.AddForce(Flow.flowAt(Time.time, Vector3(1,0,0)));
@@ -192,7 +263,7 @@ function StartRedBloodCells(){
 //Checks the location of the cells and restarts them 
 function CheckPosition(cell: GameObject, xDist : float){
 	if(cell.transform.position.x < xDist){
-		CreateRedBloodCell(cell);
+//		CreateRedBloodCell(cell);
 	}
 }
 
@@ -205,16 +276,12 @@ function CheckPositionAndKill(cell: GameObject, xDist : float){
 }
 
 function CreateRedBloodCell(cell : GameObject){
-	cell.transform.position = Vector3(Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,0,13)).x+5, 0, Random.Range(-4.5, 4.5));
+	cell.transform.position = RandomCircle(Generator.transform.position, 4.5);
+	
+//	cell.transform.position = Vector3(Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,0,13)).x+5, 0, Random.Range(-4.5, 4.5));
 	cell.rigidbody.velocity = Vector3(0,0,0);
 	cell.transform.rotation.eulerAngles = Vector3(0,0,0);
 	
-	if(BloodCellCounter < RedBloodPool.length-1){
-		BloodCellCounter++;
-	}
-	else{
-		BloodCellCounter = 0;
-	}
 }
 
 function CreateWhiteBloodCell(){
@@ -263,3 +330,13 @@ function StartBackgroundCells(){
 	}
 }	
 
+
+function RandomCircle(center:Vector3, radius:float): Vector3 {
+    // create random angle between 0 to 360 degrees
+    var ang = Random.value * 360;
+    var pos: Vector3;
+    pos.x = center.x + radius * Mathf.Sin(ang * Mathf.Deg2Rad);
+    pos.z = center.z + radius * Mathf.Cos(ang * Mathf.Deg2Rad);
+    pos.y = center.y;
+    return pos;
+}

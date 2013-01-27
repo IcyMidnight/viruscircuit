@@ -3,35 +3,35 @@
 var collisionWBC : AudioClip;
 var collisionNPC : AudioClip;
 var collisionBVW : AudioClip;
-var TargetCell : AudioClip;
+var TargetCellAttack : AudioClip;
+
+var WBCCollisionCounter : int = 0;
 
 
 
 function OnCollisionEnter (other : Collision) {
-	
-		
-//		for (var contact : ContactPoint in collision.contacts){
-		
-		
+			
+			
 		
 			//Interact with White Blood Cell Collision
 			if(other.gameObject.tag == "WBC"){
-			Debug.Log("WBC");
+			other.transform.position = Vector3(-10,0,0);
 			audio.PlayOneShot(collisionWBC);
+			WBCCollisionCounter++;
 
 			
 			}else if(other.gameObject.tag == "NPC"){
-			Debug.Log("NPC");
+			
 			audio.PlayOneShot(collisionNPC);
 			
-			} else if(other.gameObject.tag == "BVW"){
+//			} else if(other.gameObject.tag == "BVW"){
 			
-			audio.PlayOneShot(collisionBVW);
+//			audio.PlayOneShot(collisionBVW);
 			
 			}else if(other.gameObject.tag == "TargetCell"){
 			
-			audio.PlayOneShot(TargetCell);
+			audio.PlayOneShot(TargetCellAttack);
  		
-		} 
-//		}
+
+}
 }
