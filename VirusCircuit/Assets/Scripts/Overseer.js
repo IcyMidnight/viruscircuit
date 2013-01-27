@@ -231,7 +231,7 @@ function enterTargetArea() {
 }
 
 function exitTargetArea() {
-	gamePhase = 2;
+	gamePhase = 3;
 
 	CameraAnimStartTime = Time.time;
 }
