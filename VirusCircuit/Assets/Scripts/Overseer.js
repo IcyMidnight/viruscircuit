@@ -205,14 +205,14 @@ function MoveCamera(mainCam : Camera, objectToMove : GameObject){
 		//Mover.transform.position.x = Player.transform.position.x;
 		//Mover.transform.position.z = Player.transform.position.z;
 	} else if (gamePhase == 1) {
-		LerpPos = (Time.time - CameraAnimStartTime) / 1.0;
+		LerpPos = (Time.time - CameraAnimStartTime) / 3.0;
 		if (LerpPos > 1.0) {
 			gamePhase = 2;
 		} else {
 			objectToMove.transform.position = Vector3.Lerp(CameraStartPositions[objectToMove], CameraTargetPositions[objectToMove], LerpPos);
 		}
 	} else if (gamePhase == 3) {
-		LerpPos = (Time.time - CameraAnimStartTime) / 1.0;
+		LerpPos = (Time.time - CameraAnimStartTime) / 4.0;
 		if (LerpPos > 1.0) {
 			gamePhase = 4;
 		} else {
