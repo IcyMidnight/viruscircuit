@@ -190,7 +190,7 @@ function MoveCamera(mainCam : Camera, objectToMove : GameObject){
 				LevelSegmentVectors[currentSegmentCollider] = segmentForward;
 				forwardVector = segmentForward;
 			} else {
-				if (currentSegmentCollider.transform.parent.CompareTag("TargetArea")) {
+				if (gamePhase == 0 && currentSegmentCollider.transform.parent.CompareTag("TargetArea")) {
 					enterTargetArea();
 				} else {
 					forwardVector = cachedValue;
