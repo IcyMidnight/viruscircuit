@@ -24,11 +24,13 @@ function OnCollisionEnter (other : Collision) {
 			
 			audio.PlayOneShot(collisionNPC);
 			
-//			} else if(other.gameObject.tag == "BVW"){
+			} else if(other.gameObject.tag == "BVW"){
 			
-//			audio.PlayOneShot(collisionBVW);
+			audio.PlayOneShot(collisionBVW);
 			
 			}else if(other.gameObject.tag == "TargetCell"){
+			
+			Destroy(other.gameObject, 3);
 			
 			audio.PlayOneShot(TargetCellAttack);
  		
