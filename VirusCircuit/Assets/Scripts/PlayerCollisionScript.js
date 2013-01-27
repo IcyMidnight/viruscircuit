@@ -1,5 +1,6 @@
 #pragma strict
 
+var Shield : GameObject;
 var collisionWBC : AudioClip;
 var collisionNPC : AudioClip;
 var collisionBVW : AudioClip;
@@ -16,12 +17,13 @@ function OnCollisionEnter (other : Collision) {
 		
 			//Interact with White Blood Cell Collision
 			if(other.gameObject.tag == "WBC"){
-			Debug.Log("WBC");
+			other.transform.position = Vector3(-10,0,0);
+			Shield.transform.position = Vector3(-10,0,0);
 			audio.PlayOneShot(collisionWBC);
 
 			
 			}else if(other.gameObject.tag == "NPC"){
-			Debug.Log("NPC");
+			
 			audio.PlayOneShot(collisionNPC);
 			
 			} else if(other.gameObject.tag == "BVW"){
