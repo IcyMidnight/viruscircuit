@@ -96,7 +96,6 @@ function Update () {
 	var mainCamera : Camera = Mover.Find("Main Camera").camera;
 
 	PushWithFlow(Player);
-	PlayerFlow(Player);
 
 	MoveCamera(mainCamera, Mover);
 	MoveCamera(FrontCamera, Generator);
@@ -262,7 +261,32 @@ function PushFromVectorBelow(object : GameObject){
 	
 }
 
+function PushPlayerFromVectorBelow(object : GameObject){
 
+
+
+	var hitInfo : RaycastHit;
+	if (Physics.Raycast(object.transform.position, Vector3(0, -1, 0), hitInfo, Mathf.Infinity, pushLayerMask)) {
+
+		var collider : Collider = hitInfo.collider;
+		if (collider != null) {
+			var currentSegmentCollider : Collider = collider;
+		}
+	}
+			
+	if (currentSegmentCollider != null) {
+		var segmentForward : Vector3 = currentSegmentCollider.transform.forward;
+		var angleBetween : float = Vector3.Angle(CellVector, segmentForward);
+		//Debug.Log(CameraTravelVector + " <-> " + segmentForward + " -- " + angleBetween);
+		if (angleBetween < -90.0 || angleBetween > 90.0) {
+			segmentForward *= -1;
+		}
+		CellVector = CameraSpeed * segmentForward;
+	}
+	
+	object.rigidbody.AddForce(Flow.flowAt(Time.time/2, CellVector));
+	
+}
 
 
 function PushWithFlow(object : GameObject){

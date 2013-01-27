@@ -1,17 +1,18 @@
 #pragma strict
 var LoadingBar : Texture[] = new Texture[7];
-@HideInInspector var LoadingBarRect : Rect;
-@HideInInspector var LoadingBarNum : int = -1;
+private var LoadingBarRect : Rect;
+private var LoadingBarNum : int = 0;
 
 var HealthBar : Texture[] = new Texture[11];
-@HideInInspector var HealthBarRect : Rect;
-@HideInInspector var HealthBarNum : int = 9;
+private var HealthBarRect : Rect;
+private var HealthBarNum : int = 9;
+private var virusMeterOn : boolean = false;
 
 var Player : GameObject;
 
 var Skin : GUISkin;
 
-@HideInInspector var GameOver : boolean = false;
+private var GameOver : boolean = false;
 
 function Start () {
 
@@ -24,8 +25,14 @@ function Update () {
 
 HealthBarNum = 9 - Player.GetComponent(PlayerCollisionScript).WBCCollisionCounter;
 
+LoadingBarNum = Player.GetComponent(PlayerCollisionScript).InfectionCounter;
+
 if(HealthBarNum < 1){
 	GameOver = true;
+	}
+	
+if(Player.transform.position.x > 295){
+		virusMeterOn = true;
 	}
 
 }
@@ -34,11 +41,15 @@ function OnGUI(){
 
 	GUI.skin = Skin;
 
-	var LoadingBarWin = GUI.Window(0, LoadingBarRect, LoadingBarWindow, "");
+
+	if(virusMeterOn == true){
+		var LoadingBarWin = GUI.Window(0, LoadingBarRect, LoadingBarWindow, "");
+	}
 	var HealthBarWin = GUI.Window(1, HealthBarRect, HealthBarWindow, "");
 	
 	if(GameOver == true){
 		GUI.Box(Rect(20,20,Screen.width-40,Screen.height-40),"GAME OVER");
+		Player.SetActive(false);
 	}
 }
 

@@ -6,6 +6,7 @@ var collisionBVW : AudioClip;
 var TargetCellAttack : AudioClip;
 
 var WBCCollisionCounter : int = 0;
+var InfectionCounter : int = 0;
 
 var radius = 3.0;
 var power = 10.0;
@@ -50,6 +51,8 @@ function OnCollisionEnter (other : Collision) {
 			audio.PlayOneShot(collisionBVW);
 			
 			}else if(other.gameObject.tag == "TargetCell"){
+			
+			InfectionCounter++;
 			
 			Destroy(other.gameObject, 3);
 			
