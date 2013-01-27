@@ -10,6 +10,7 @@ private var virusMeterOn : boolean = false;
 
 var Player : GameObject;
 
+var EndGame : boolean = true;
 
 var Skin : GUISkin;
 
@@ -35,7 +36,11 @@ if(HealthBarNum < 1){
 if(Player.transform.position.x > 295){
 		virusMeterOn = true;
 	}
-
+	
+if(Player.transform.position.x < 181 && Player.transform.position.z > 295){
+		EndGame = true;
+	}
+	
 }
 
 function OnGUI(){
@@ -52,6 +57,11 @@ function OnGUI(){
 		GUI.Box(Rect(20,20,Screen.width-40,Screen.height-40),"GAME OVER");
 		Player.SetActive(false);
 	}
+	
+	if(EndGame == true){
+	GUI.Box(Rect(20,20,Screen.width-40,Screen.height-40),"CONGRATULATIONS, YOU WON!");
+		Player.SetActive(false);
+		}
 }
 
 	
@@ -84,7 +94,7 @@ function HealthBarWindow (windowID : int) {
 
     if(HealthBarNum >= 0){ 
 	    GUI.DrawTexture(Rect(112,7,400,26), HealthBar[0]);
-	    GUI.DrawTexture(Rect(50,0,40,40), HealthBar[10]);
+	    GUI.DrawTexture(Rect(50,-5,50,50), HealthBar[10]);
     }
     if(HealthBarNum >= 1) 
     
