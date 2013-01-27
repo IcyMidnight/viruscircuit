@@ -8,10 +8,8 @@ var Mover : GameObject;
 var Player : GameObject;
 
 var redBloodCell : GameObject;
-
-var whiteBloodCell : GameObject;
-
 var backgroundRedBloodCell : GameObject;
+var whiteBloodCell : GameObject;
 
 var BgTiles : GameObject[] = new GameObject[3];
 
@@ -74,7 +72,6 @@ function Update () {
 	for (var cell : GameObject in WhiteBooldCellsToDeactivate) {
 		ActiveWhiteBloodPool.Remove(cell);
 		ReserveWhiteBloodPool.Add(cell);
-		Debug.Log("after removing cells, num are " + ActiveWhiteBloodPool.Count + ", " + ReserveWhiteBloodPool.Count);
 	}
 	WhiteBooldCellsToDeactivate.Clear();
 
@@ -83,6 +80,9 @@ function Update () {
 		lastWhiteCell = floorTime;
 		CreateWhiteBloodCell();
 	}
+	
+	var segment = CameraUtils.GetCurrentLevelSegment(Mover.Find("Main Camera").camera);
+	//Debug.Log("Segment: " + segment);
 }
 
 //This keeps the player from moving off the screen in either the right or left directions
@@ -140,7 +140,6 @@ function CreateRedBloodPool(){
 //Make a pool of blood cells to use as needed
 function CreateWhiteBloodPool(){
 	for(var i = 0; i < WhiteBloodPoolSize; i++){
-		Debug.Log("Adding cell " + i);
 		ReserveWhiteBloodPool.Add(Instantiate(whiteBloodCell, Vector3(0,0,20+i*1.5), Quaternion.identity));
 	}
 }
@@ -195,11 +194,15 @@ function CreateRedBloodCell(cell : GameObject){
 }
 
 function CreateWhiteBloodCell(){
-	Debug.Log("Creating a White Blood Cell...");
-	
 	var position : Vector3 = Vector3(Mover.Find("Main Camera").camera.ScreenToWorldPoint(Vector3(Screen.width,0,13)).x+5, 0, Random.Range(-4.5, 4.5));
 	
-	var lastIndex : int = ReserveWhiteBloodPool.Count - 1;
+	var lastIndex : int = (ReserveWhiteBloodPool.Count - 1);
+	
+	if (lastIndex < 1) {
+		Debug.Log("We're out of White Blood Cells");
+		return;
+	}
+	
 	var cell : GameObject = ReserveWhiteBloodPool[lastIndex];
 	ReserveWhiteBloodPool.RemoveAt(lastIndex);
 	ActiveWhiteBloodPool.Add(cell);
@@ -207,8 +210,6 @@ function CreateWhiteBloodCell(){
 	cell.transform.position = position;
 	cell.rigidbody.velocity = Vector3(0,0,0);
 	cell.transform.rotation.eulerAngles = Vector3(0,0,0);
-	
-		Debug.Log("after add cell, num are " + ActiveWhiteBloodPool.Count + ", " + ReserveWhiteBloodPool.Count);
 }
 
 //Checks the location of the cells and restarts them 
