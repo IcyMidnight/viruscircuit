@@ -14,6 +14,10 @@ public function GetCurrentLevelSegment(origin : Camera) {
 	return null;
 }
 
+public function TargetAreaCameraStart(mainCamera : Camera, gen : GameObject, destroyer : GameObject) {
+
+}
+
 public function GetCurrentLevelSegment2(origin : Vector3) {
 	var hitInfo : RaycastHit;
 	if (Physics.Raycast(origin, Vector3(0, -1, 0), hitInfo, Mathf.Infinity, layerMask)) {

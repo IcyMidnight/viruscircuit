@@ -151,11 +151,11 @@ function KeepPlayerInView(){
 //Move the camera at a set speed
 function MoveCamera(mainCam : Camera, objectToMove : GameObject){
 	var currentSegmentCollider : Collider = this.GetComponent(CameraUtils).GetCurrentLevelSegment(mainCam);
+	var forwardVector : Vector3 = CameraTravelVector;
 	
 	if (currentSegmentCollider != null) {
 		//Debug.Log(LevelSegmentVectors[currentSegmentCollider]);
 		var cachedValue = LevelSegmentVectors[currentSegmentCollider];
-		var forwardVector : Vector3;
 		if (cachedValue == null) {
 			//Debug.Log("No forward vector");
 			var segmentForward : Vector3 = currentSegmentCollider.transform.forward;
@@ -169,12 +169,12 @@ function MoveCamera(mainCam : Camera, objectToMove : GameObject){
 			forwardVector = segmentForward;
 		} else {
 			forwardVector = cachedValue;
+			CameraTravelVector = forwardVector;
 			//Debug.Log("Cached Vector" + forwardVector);
 		}
-		CameraTravelVector = CameraSpeed * forwardVector;
 	}
 
-	objectToMove.transform.Translate(Time.deltaTime * CameraTravelVector);
+	objectToMove.transform.Translate(Time.deltaTime * forwardVector * CameraSpeed);
 	
 	//Mover.transform.position.x = Player.transform.position.x;
 	//Mover.transform.position.z = Player.transform.position.z;
